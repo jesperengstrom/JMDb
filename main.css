@@ -11,6 +11,10 @@ body {
     flex-direction: column;
 }
 
+p {
+    margin: 0.5rem;
+}
+
 #movie-wrapper {
     width: 75%;
     display: flex;
@@ -30,7 +34,21 @@ body {
 }
 
 .inline-link {
+    margin: 1rem;
+}
+
+.inline-link,
+.genre-box {
+    font-size: 0.75rem;
     text-transform: uppercase;
     font-variant: small-caps;
-    margin: 1rem;
+}
+
+.genre-box {
+    display: inline-block;
+    background: cornflowerblue;
+    color: white;
+    padding: 3px 5px;
+    margin: 3px;
+    border-radius: 3px;
 }
