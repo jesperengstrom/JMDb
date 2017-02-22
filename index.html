@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JMDb</title>
     <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
 </head>
 
 <body>
     <h1>JMDb</h1>
     <h2>The Jesper Movie Database</h2>
-    <section id="add-movie-section">
+    <button class="toggleVisible">Add a movie</button>
+    <section id="add-movie-section" class="hidden">
         <header>
             <h3>Add a new movie</h3>
         </header>
@@ -32,7 +34,7 @@
                 <label for="add-starring">Lead actors:</label>
                 <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
             </p>
-            <p>
+            <p class="form-row">
                 <label for="add-genre">Genre:</label>
                 <input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama
                 <input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic
@@ -68,6 +70,7 @@
             </p>
             <p>
                 <input type="button" value="Submit" id="add-submit">
+                <input type="button" value="Cancel" class="toggleVisible">
             </p>
         </form>
     </section>

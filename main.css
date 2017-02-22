@@ -9,10 +9,52 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    font-family: 'Merriweather', serif;
 }
 
 p {
     margin: 0.5rem;
+}
+
+a {
+    text-decoration: none;
+    color: dimgrey;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input {
+    padding: 0.25rem;
+}
+
+#add-movie-section {
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.tone-down {
+    color: lightslategrey;
+}
+
+.credits {
+    margin-left: 0px;
+}
+
+.goodgrade {
+    color: seagreen;
+    font-weight: bold;
+}
+
+.badgrade {
+    color: indianred;
+    font-weight: bold;
+}
+
+.form-row {
+    display: inline-flex;
 }
 
 #movie-wrapper {
@@ -34,7 +76,7 @@ p {
 }
 
 .inline-link {
-    margin: 1rem;
+    margin: 0.5rem;
 }
 
 .inline-link,
@@ -49,6 +91,14 @@ p {
     background: cornflowerblue;
     color: white;
     padding: 3px 5px;
-    margin: 3px;
+    margin: 3px 3px 3px 0px;
     border-radius: 3px;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
 }
