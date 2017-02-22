@@ -1,0 +1,36 @@
+html,
+body {
+    margin: 0;
+    padding: 0
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#movie-wrapper {
+    width: 75%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.moviebox {
+    margin: 2rem;
+}
+
+.movie-cover {
+    width: 250px;
+    height: 350px;
+    background-image: url("images/nocover.jpg");
+    background-size: cover;
+}
+
+.inline-link {
+    text-transform: uppercase;
+    font-variant: small-caps;
+    margin: 1rem;
+}

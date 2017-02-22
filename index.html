@@ -4,15 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>the Jesper Movie Database</title>
+    <title>JMDb</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-    <section class="movie-wrapper">
-        <div id="target"></div>
+    <h1>JMDb</h1>
+    <h2>The Jesper Movie Database</h2>
+    <section id="add-movie-section">
+        <header>
+            <h3>Add a new movie</h3>
+        </header>
+        <form id="add-movie-form">
+            <p>
+                <label for="add-title">Title:</label>
+                <input type="text" id="add-title" name="add-title" placeholder="Add a movie title" required maxlength="30" />
+            </p>
+            <p>
+                <label for="add-year">Year of premiere:</label>
+                <input type="number" id="add-year" name="add-year" min="1900" max="2020" step="1" value="2017" />
+            </p>
+            <p>
+                <label for="add-director">Director:</label>
+                <input type="text" id="add-director" name="add-director" placeholder="Who directed it?" maxlength="30" />
+            </p>
+            <p>
+                <label for="add-starring">Lead actors:</label>
+                <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
+            </p>
+            <p>
+                <label for="add-genre">Genre:</label>
+                <input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama
+                <input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic
+                <input type="checkbox" class="add-genre" name="add-genre" value="Comedy">Comedy
+                <input type="checkbox" class="add-genre" name="add-genre" value="Thriller">Thriller
+                <input type="checkbox" class="add-genre" name="add-genre" value="Action">Action
+                <input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror
+                <input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Sci-fi
+                <input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary
+                <input type="checkbox" class="add-genre" name="add-genre" value="Animated">Animated
+                <input type="checkbox" class="add-genre" name="add-genre" value="Kids">Kids
+            </p>
+            <p>
+                <label for="add-cover">Cover:</label>
+                <input type="url" id="add-cover" name="add-cover" placeholder="URL (min 250px x 350px)" />
+            </p>
+            <p>
+                <label for="add-rating">Rate it!</label>
+                <select id="add-rating" name="add-rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected="selected">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            </p>
+            <p>
+                <input type="button" value="Submit" id="add-submit">
+            </p>
+        </form>
     </section>
-
-
+    <section id="movie-wrapper">
+    </section>
     <script src="main.js"></script>
 </body>
 
