@@ -5,14 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JMDb</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+    <link href="slider/nouislider.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h1>JMDb</h1>
-    <h2>The Jesper Movie Database</h2>
-    <button class="toggleVisible">Add a movie</button>
+    <!-- page header -->
+    <section is="page-header-section">
+        <header>
+            <h1>JMDb</h1>
+            <h2>The Jesper Movie Database</h2>
+            <button class="toggleVisible">Add a movie</button>
+        </header>
+    </section>
+    <!-- add movie form -->
     <section id="add-movie-section" class="hidden">
         <header>
             <h3>Add a new movie</h3>
@@ -24,7 +31,7 @@
             </p>
             <p>
                 <label for="add-year">Year of premiere:</label>
-                <input type="number" id="add-year" name="add-year" min="1900" max="2020" step="1" value="2017" />
+                <input type="number" id="add-year" name="add-year" min="1920" max="2020" step="1" value="2017" />
             </p>
             <p>
                 <label for="add-director">Director:</label>
@@ -34,7 +41,7 @@
                 <label for="add-starring">Lead actors:</label>
                 <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
             </p>
-            <p class="form-row">
+            <p>
                 <label for="add-genre">Genre:</label>
                 <input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama
                 <input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic
@@ -74,9 +81,69 @@
             </p>
         </form>
     </section>
+    <!-- advanced search form -->
+    <section id="search-movie-section" class="visible">
+        <header>
+            <h3>Search the JMDb</h3>
+        </header>
+        <form id="search-movie-form">
+            <p>
+                <label for="search-title">Search for a movie title</label>
+                <input type="text" id="search-title" name="search-title" placeholder="E.g. Eyes Wide Shut" required maxlength="30" />
+            </p>
+            <p>
+                <label for="search-director">Search for a director:</label>
+                <input type="text" id="search-director" name="search-director" placeholder="E.g. Stanley Kubrick" maxlength="30" />
+            </p>
+            <p>
+                <label for="search-starring">Search for an actor:</label>
+                <input type="text" id="search-starring" name="search-starring" placeholder="E.g. Tom Cruise" maxlength="60" />
+            </p>
+            <p>
+                <label for="filter-year">Filter by year:</label>
+                <input type="number" id="filter-year" name="filter-year" min="1900" max="2020" step="1" value="2017" />
+            </p>
+            <p>
+                <label for="filter-genre">Filter by genre:</label>
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Drama">Drama
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Romantic">Romantic
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Comedy">Comedy
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Thriller">Thriller
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Action">Action
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Horror">Horror
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Sci-fi">Sci-fi
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Documentary">Documentary
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Animated">Animated
+                <input type="checkbox" class="filter-genre" name="filter-genre" value="Kids">Kids
+            </p>
+            <p>
+                <label for="filter-rating">Filter by rating</label>
+                <select id="filter-rating" name="filter-rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            </p>
+            <p>
+                <input type="button" value="Search" id="search-submit">
+                <input type="button" value="Cancel" class="toggleVisible">
+            </p>
+        </form>
+    </section>
+    <!-- movie display section -->
     <section id="movie-wrapper">
     </section>
-    <script src="main.js"></script>
+    <script src="js/main.js"></script>
+    <script src="slider/nouislider.min.js"></script>
 </body>
 
 </html>

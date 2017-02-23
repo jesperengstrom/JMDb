@@ -9,7 +9,7 @@ Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
 });
 
 
-//Add form input enters here
+//Add form input enters here...
 
 function createMovie() {
     let movieTitle = document.getElementById("add-title").value;
@@ -25,11 +25,12 @@ function createMovie() {
     document.getElementById("add-movie-form").reset();
 }
 
-// ...enters into constructor
+// ...is sent into constructor
 
 //CONSTRUCTOR PATTERN
 //My movies-constructor for making new movie-objects
 //and prototype function for formatting the input correctly
+
 function Movie(title, rating, year, director, starring, genre, cover) {
     this.title = title;
     this.rating = [rating];
@@ -42,11 +43,10 @@ function Movie(title, rating, year, director, starring, genre, cover) {
 
 Movie.prototype.prepareStrings = function(movie) {
     this.starring = this.starring.split(", ");
-    console.log(this.starring);
     movieModule.addMovie(this);
 };
 
-//...enters into storage
+//...and into storage
 
 //MODULE PATTERN
 //MovieModule - My database of existing movies, tucked away in a module so data is safe
