@@ -74,7 +74,7 @@ input {
 .movie-cover {
     width: 250px;
     height: 350px;
-    background-image: url("images/nocover.jpg");
+    background-image: url("../images/nocover.jpg");
     background-size: cover;
 }
 
@@ -96,6 +96,11 @@ input {
     padding: 3px 5px;
     margin: 3px 3px 3px 0px;
     border-radius: 3px;
+}
+
+.sliderbox {
+    margin: 2rem 0;
+    padding: 2rem 1rem;
 }
 
 .hidden {

@@ -1,6 +1,7 @@
 //event handlers
 window.addEventListener("DOMContentLoaded", () => printModule.printMovies(movieModule.getAllMovies()));
 document.getElementById("add-submit").addEventListener("click", createMovie);
+document.getElementById("search-submit").addEventListener("click", advancedSearch);
 
 Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     el.addEventListener("click", () => {
@@ -8,6 +9,7 @@ Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     });
 });
 
+//*ADDING A MOVIE*
 
 //Add form input enters here...
 
@@ -64,7 +66,7 @@ var movieModule = (function() {
     }, ];
     return {
         addMovie: function(obj) {
-            movieDatabase.push(obj);
+            movieDatabase.unshift(obj);
             return this.refreshMovies(this.getAllMovies());
         },
         getAllMovies: function() {
@@ -76,6 +78,8 @@ var movieModule = (function() {
         }
     };
 })();
+
+//*RENDERING MOVIES*
 
 //...where it's fetched by print-to-screen module
 //Only printing + display functions need to be public, other ones are internal
@@ -130,3 +134,55 @@ var printModule = (function() {
 
 var jurassicPark = new Movie("Jurassic Park", 5, 1993, "Steven Spielberg", "Sam Neill, Laura Dern", ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg");
 jurassicPark.prepareStrings();
+
+
+//Sliders for advanced search - tucked in a module. Only possible to get values, no input.
+//using noUISlider library - https://refreshless.com/nouislider/
+//with wNumb number formatting library for comfort - https://refreshless.com/wnumb/
+//I make two of my own slider objects using factory pattern and a simple API for customizing
+var sliderModule = (function() {
+    var yearSlider = document.getElementById("slider-year");
+    var ratingSlider = document.getElementById("slider-rating");
+
+    noUiSlider.create(yearSlider, {
+        start: [1920, 2020],
+        connect: true,
+        step: 1,
+        tooltips: [true, true],
+        range: {
+            'min': 1920,
+            'max': 2020
+        },
+        format: wNumb({
+            decimals: 0
+        }),
+        pips: {
+            mode: 'positions',
+            values: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        }
+    });
+
+    noUiSlider.create(ratingSlider, {
+        start: [1, 10],
+        connect: true,
+        step: 1,
+        tooltips: [true, true],
+        range: {
+            'min': 1,
+            'max': 10
+        },
+        format: wNumb({
+            decimals: 0
+        }),
+        pips: {
+            mode: 'values',
+            values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            density: 10,
+            stepped: true
+        }
+    });
+    return {
+
+
+    };
+})();

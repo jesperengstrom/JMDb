@@ -101,8 +101,13 @@
             </p>
             <p>
                 <label for="filter-year">Filter by year:</label>
-                <input type="number" id="filter-year" name="filter-year" min="1900" max="2020" step="1" value="2017" />
+                <div class="sliderbox">
+                    <div id="slider-year">
+                    </div>
+                    <!--<input type="number" id="filter-year" name="filter-year" min="1900" max="2020" step="1" value="2017" />-->
+                </div>
             </p>
+
             <p>
                 <label for="filter-genre">Filter by genre:</label>
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Drama">Drama
@@ -117,21 +122,11 @@
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Kids">Kids
             </p>
             <p>
-                <label for="filter-rating">Filter by rating</label>
-                <select id="filter-rating" name="filter-rating">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-            </select>
+                <label for="filter-rating">Filter by rating:</label>
+                <div class="sliderbox">
+                    <div id="slider-rating">
+                    </div>
+                </div>
             </p>
             <p>
                 <input type="button" value="Search" id="search-submit">
@@ -142,8 +137,10 @@
     <!-- movie display section -->
     <section id="movie-wrapper">
     </section>
-    <script src="js/main.js"></script>
+    <script src="wnumb-1.0.2/wNumb.js"></script>
     <script src="slider/nouislider.min.js"></script>
+    <script src="js/main.js"></script>
+
 </body>
 
 </html>
