@@ -27,7 +27,7 @@ function createMovie() {
     document.getElementById("add-movie-form").reset();
 }
 
-// ...is sent into constructor
+// ...is sent into constructor.
 
 //CONSTRUCTOR PATTERN
 //My movies-constructor for making new movie-objects
