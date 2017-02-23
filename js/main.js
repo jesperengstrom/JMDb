@@ -1,7 +1,9 @@
 //event handlers
-window.addEventListener("DOMContentLoaded", () => printModule.printMovies(movieModule.getAllMovies()));
-document.getElementById("add-submit").addEventListener("click", createMovie);
-document.getElementById("search-submit").addEventListener("click", advancedSearch);
+window.addEventListener("DOMContentLoaded", () => printModule.printMovies(databaseModule.getAllMovies()));
+document.getElementById("add-submit").addEventListener("click", function() {
+    inputModule.collectValues("add-title", "add-rating", "add-year", "add-director", "add-starring", ".add-genre:checked", "add-cover", true);
+});
+//document.getElementById("search-submit").addEventListener("click", advancedSearch);
 
 Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     el.addEventListener("click", () => {
@@ -9,52 +11,54 @@ Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     });
 });
 
-//*ADDING A MOVIE*
+/*I basically have three modules that handle all functionality, for grouping and privacy puropses: 
+as much as possible of their variables and functions are private, they have a public API with functions necessary to communicate with each other.
 
-//Add form input enters here...
+1. INPUT. Revealing module pattern. All form input (both add and search) are modified and made into objects using a CONSTRUCTOR
+inside the module. It is then passed on to... */
 
-function createMovie() {
-    let movieTitle = document.getElementById("add-title").value;
-    let movieRating = document.getElementById("add-rating").value;
-    let movieYear = document.getElementById("add-year").value;
-    let movieDirector = document.getElementById("add-director").value;
-    let movieStarring = document.getElementById("add-starring").value;
-    let movieGenre = Array.from(document.querySelectorAll(".add-genre:checked")).map((val) => { return val.value; });
-    let movieCover = document.getElementById("add-cover").value;
-    let newMovie = new Movie(movieTitle, movieRating, movieYear, movieDirector, movieStarring, movieGenre, movieCover);
-    newMovie.prepareStrings();
-    printModule.toggleBox();
-    document.getElementById("add-movie-form").reset();
-}
+var inputModule = (function() {
+    function Movie(title, rating, year, director, starring, genre, cover) {
+        this.title = title;
+        this.rating = [rating];
+        this.year = year;
+        this.director = director;
+        this.starring = starring;
+        this.genre = genre;
+        this.cover = cover;
+    }
 
-// ...is sent into constructor.
+    Movie.prototype.prepareStrings = function(movie) {
+        this.starring = this.starring.split(", ");
+        databaseModule.addMovie(this);
+    };
 
-//CONSTRUCTOR PATTERN
-//My movies-constructor for making new movie-objects
-//and prototype function for formatting the input correctly
+    function collectValues(title, rating, year, director, starring, genre, cover, isAdd) {
+        let movieTitle = document.getElementById(title).value;
+        let movieRating = document.getElementById(rating).value;
+        let movieYear = document.getElementById(year).value;
+        let movieDirector = document.getElementById(director).value;
+        let movieStarring = document.getElementById(starring).value;
+        let movieGenre = Array.from(document.querySelectorAll(genre)).map((val) => { return val.value; });
+        let movieCover = document.getElementById(cover).value;
+        let newMovie = new Movie(movieTitle, movieRating, movieYear, movieDirector, movieStarring, movieGenre, movieCover);
+        newMovie.prepareStrings();
+        printModule.toggleBox();
+        document.getElementById("add-movie-form").reset();
+    }
+    return {
+        collectValues: collectValues,
+        Movie: Movie
+    };
+})();
 
-function Movie(title, rating, year, director, starring, genre, cover) {
-    this.title = title;
-    this.rating = [rating];
-    this.year = year;
-    this.director = director;
-    this.starring = starring;
-    this.genre = genre;
-    this.cover = cover;
-}
 
-Movie.prototype.prepareStrings = function(movie) {
-    this.starring = this.starring.split(", ");
-    movieModule.addMovie(this);
-};
+/*2. DATABASE. Module pattern. 
+My database of existing movies is tucked away here no risk of manipulation once created.
+The module is providing public endpoints to add a movie, get all movies, get some movies (filtered) and refreshing the list, which is
+managed by...*/
 
-//...and into storage
-
-//MODULE PATTERN
-//MovieModule - My database of existing movies, tucked away in a module so data is safe
-//providing public "endpoints" to get all movies, get some movies (filted) and addding a movie.
-
-var movieModule = (function() {
+var databaseModule = (function() {
     var movieDatabase = [{
         title: "Silence Of The Lambs",
         rating: [7, 8, 9, 6],
@@ -79,9 +83,7 @@ var movieModule = (function() {
     };
 })();
 
-//*RENDERING MOVIES*
-
-//...where it's fetched by print-to-screen module
+//3. PRINT-TO-SCREEN. Module pattern.
 //Only printing + display functions need to be public, other ones are internal
 
 var printModule = (function() {
@@ -130,16 +132,18 @@ var printModule = (function() {
     };
 })();
 
-//pre-existing movie objects
+//pre-defined movie objects initializing the constructor.
 
-var jurassicPark = new Movie("Jurassic Park", 5, 1993, "Steven Spielberg", "Sam Neill, Laura Dern", ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg");
+var jurassicPark = new inputModule.Movie("Jurassic Park", 5, 1993, "Steven Spielberg", "Sam Neill, Laura Dern", ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg");
 jurassicPark.prepareStrings();
 
+//-----------------------------------------------//
 
-//Sliders for advanced search - tucked in a module. Only possible to get values, no input.
+//Sliders for advanced search. Only possible to get values, no input.
 //using noUISlider library - https://refreshless.com/nouislider/
 //with wNumb number formatting library for comfort - https://refreshless.com/wnumb/
-//I make two of my own slider objects using factory pattern and a simple API for customizing
+//They use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
+
 var sliderModule = (function() {
     var yearSlider = document.getElementById("slider-year");
     var ratingSlider = document.getElementById("slider-rating");
@@ -181,8 +185,5 @@ var sliderModule = (function() {
             stepped: true
         }
     });
-    return {
-
-
-    };
+    return {};
 })();
