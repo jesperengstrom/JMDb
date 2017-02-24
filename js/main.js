@@ -49,7 +49,7 @@ var makeNew = (function() {
 
     function makeArray(string) {
         return string.split(", ");
-    };
+    }
 
     return {
         makeMovie: makeMovie,
@@ -57,7 +57,8 @@ var makeNew = (function() {
     };
 })();
 
-//makeSearchObject
+//SEARCH
+
 var search = (function() {
 
     function makeSearchObject() {
@@ -72,25 +73,14 @@ var search = (function() {
         if (searchDirector.length !== 0) searchObj.director = searchDirector;
         let searchStarring = document.getElementById("search-starring").value;
         if (searchStarring.length !== 0) searchObj.starring = searchStarring;
-        performSearch(searchObj);
+        performSearch(searchObj, store.getAllMovies());
     }
 
-    function filterInterval() {
-        var searchResult = movieDatabase.filter(function(val) {
-            return val.year >= searchFor.year[0] && val.year <= searchFor.year[1];
-        });
-
-    }
-
-    function performSearch(obj) {
-        var searchFor = obj;
-        var movieDatabase = store.getAllMovies();
-
-
+    function performSearch(find, all) {
+        var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
+            .filter((val) => (print.publicCalcRating(val.rating) >= find.rating[0] && print.publicCalcRating(val.rating) <= find.rating[1]));
         store.refreshMovies(searchResult);
-
     }
-
 
     return {
         makeSearchObject: makeSearchObject,
@@ -123,7 +113,7 @@ var store = (function() {
             return movieDatabase;
         },
         refreshMovies: function(movies) {
-            console.log(movieDatabase);
+            console.log(movies);
             return print.printMovies(movies);
         }
     };
@@ -133,11 +123,6 @@ var store = (function() {
 //Where all the object from storage are rendered. Only printing + display functions need to be public, other ones are internal
 
 var print = (function() {
-
-    function calcRating(arr) {
-        let rating = (arr.reduce((prev, cur) => prev + cur) / arr.length).toFixed(1);
-        return rating;
-    }
 
     function setGradeColor(grade) {
         return grade > 5 ? "goodgrade" : "badgrade";
@@ -157,6 +142,11 @@ var print = (function() {
             return val.join(", ");
         }
         return val;
+    }
+
+    function calcRating(arr) {
+        let rating = parseFloat((arr.reduce((prev, cur) => prev + cur) / arr.length).toFixed(1));
+        return rating;
     }
 
     return {
@@ -185,7 +175,8 @@ var print = (function() {
             let addBox = document.getElementById("add-movie-section");
             addBox.classList.toggle("visible");
             addBox.classList.toggle("hidden");
-        }
+        },
+        publicCalcRating: calcRating
     };
 })();
 
