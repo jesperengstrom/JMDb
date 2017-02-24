@@ -10,9 +10,10 @@ document.getElementById("add-submit").addEventListener("click", () => {
     let movieDirector = document.getElementById("add-director").value;
     let movieStarring = document.getElementById("add-starring").value;
 
-    input.processValues(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring, true);
+    input.makeObject(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring, true);
 });
-document.getElementById("search-submit").addEventListener("click", function() {
+document.getElementById("search-submit").addEventListener("click", () => {
+
     let searchTitle = document.getElementById("search-title").value;
     let ratingInterval = ratingSlider.noUiSlider.get();
     let yearInterval = yearSlider.noUiSlider.get();
@@ -21,7 +22,7 @@ document.getElementById("search-submit").addEventListener("click", function() {
     let searchDirector = document.getElementById("search-director").value;
     let searchStarring = document.getElementById("search-starring").value;
 
-    input.processValues(searchTitle, ratingInterval, yearInterval, filterGenre, searchCover, searchDirector, searchStarring, false);
+    input.makeObject(searchTitle, ratingInterval, yearInterval, filterGenre, searchCover, searchDirector, searchStarring, false);
 });
 
 Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
@@ -57,54 +58,24 @@ var input = (function() {
             store.addMovie(this);
             print.toggleBox();
             document.getElementById("add-movie-form").reset();
-        } else { console.log("this is a search" + this) };
+        } else { console.log(this); }
+    };
 
-
-    }
-
-    function checkValue(val) {
-        return (val.length !== 0);
-    }
-
-    function processValues(title, rating, year, genre, cover, director, starring, isAdd) {
+    function makeObject(title, rating, year, genre, cover, director, starring, isAdd) {
         var newMovie = new Movie();
-        console.log(arguments);
-
-        if (checkValue(title)) {
-            newMovie.title = title;
-        }
-
-        if (checkValue(rating)) {
-            newMovie.rating = [rating];
-        }
-
-        if (checkValue(year)) {
-            newMovie.year = year;
-        }
-
-        if (checkValue(genre)) {
-            newMovie.genre = genre;
-        }
-
-        if (checkValue(cover)) {
-            newMovie.cover = cover;
-        }
-
-        if (checkValue(director)) {
-            newMovie.director = director;
-        }
-
-        if (checkValue(starring)) {
-            newMovie.starring = newMovie.makeArray(starring);
-        }
-
+        if (title.length !== 0) newMovie.title = title;
+        if (rating.length !== 0) newMovie.rating = [rating];
+        if (year.length !== 0) newMovie.year = year;
+        if (genre.length !== 0) newMovie.genre = genre;
+        if (cover.length !== 0) newMovie.cover = cover;
+        if (director.length !== 0) newMovie.director = director;
+        if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);
         newMovie.isAdd = isAdd;
-
         newMovie.addOrSearch();
     }
 
     return {
-        processValues: processValues,
+        makeObject: makeObject,
         Movie: Movie
     };
 })();
@@ -159,7 +130,7 @@ var print = (function() {
         for (let el in arr) {
             genreCode += `<div class="genre-box">${arr[el]}</div>`;
         }
-        genreCode += `<span class="inline-link"><a href="#">Edit genre</a></span>`
+        genreCode += `<span class="inline-link"><a href="#">Edit genre</a></span>`;
         return genreCode;
     }
 
@@ -184,7 +155,7 @@ var print = (function() {
                                 <p class="credits tone-down">Director: ${movie.director}</p>
                                 <p class="credits tone-down">Starring: ${joinArray(movie.starring)}</p>
                                 ${printGenres(movie.genre)}
-                                <p class="credits tone-down">Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span> (${movie.rating.length} votes)</p></div>`
+                                <p class="credits tone-down">Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span> (${movie.rating.length} votes)</p></div>`;
             }
         },
         toggleBox: function() {
