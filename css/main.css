@@ -40,6 +40,7 @@ input {
     border: 1px solid black;
     padding: 1rem;
     margin: 1rem;
+    flex-direction: column;
 }
 
 .tone-down {
@@ -108,5 +109,14 @@ input {
 }
 
 .visible {
-    display: block;
+    display: flex;
+}
+
+#search-movie-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-row {
+    margin: 1rem;
 }

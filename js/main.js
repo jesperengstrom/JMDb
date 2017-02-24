@@ -1,29 +1,7 @@
 //event handlers
-window.addEventListener("DOMContentLoaded", () => print.printMovies(store.getAllMovies()));
-document.getElementById("add-submit").addEventListener("click", () => {
-
-    let movieTitle = document.getElementById("add-title").value;
-    let movieRating = parseInt(document.getElementById("add-rating").value);
-    let movieYear = parseInt(document.getElementById("add-year").value);
-    let movieGenre = Array.from(document.querySelectorAll(".add-genre:checked")).map((val) => { return val.value; });
-    let movieCover = document.getElementById("add-cover").value;
-    let movieDirector = document.getElementById("add-director").value;
-    let movieStarring = document.getElementById("add-starring").value;
-
-    input.makeObject(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring, true);
-});
-document.getElementById("search-submit").addEventListener("click", () => {
-
-    let searchTitle = document.getElementById("search-title").value;
-    let ratingInterval = ratingSlider.noUiSlider.get();
-    let yearInterval = yearSlider.noUiSlider.get();
-    let filterGenre = Array.from(document.querySelectorAll(".filter-genre:checked")).map((val) => { return val.value; });
-    let searchCover = "";
-    let searchDirector = document.getElementById("search-director").value;
-    let searchStarring = document.getElementById("search-starring").value;
-
-    input.makeObject(searchTitle, ratingInterval, yearInterval, filterGenre, searchCover, searchDirector, searchStarring, false);
-});
+window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
+document.getElementById("add-submit").addEventListener("click", () => makeNew.makeMovie());
+document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
 Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     el.addEventListener("click", () => {
@@ -31,14 +9,14 @@ Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
     });
 });
 
-/*I basically have three modules that handle all functionality, for grouping and privacy puropses: 
+/*I basically have a number modules that handle all functionality, for grouping and privacy puropses: 
 as much as possible of their variables and functions are private, they have a public API with functions necessary to communicate with each other.
 
-1. INPUT. Revealing module pattern. All form input (both add and search) are modified and made into objects using a CONSTRUCTOR
+MAKE NEW. Revealing module pattern. All form makeNew (both add and search) are modified and made into objects using a CONSTRUCTOR
 inside the module. It is then passed on to... */
 
-var input = (function() {
-    function Movie(title, rating, year, genre, cover = "images/nocover.jpg", director = "N/A", starring = "N/A", isAdd) {
+var makeNew = (function() {
+    function Movie(title, rating, year, genre, cover = "images/nocover.jpg", director = "N/A", starring = "N/A") {
         this.title = title;
         this.rating = [rating];
         this.year = year;
@@ -46,42 +24,82 @@ var input = (function() {
         this.starring = starring;
         this.genre = genre;
         this.cover = cover;
-        this.isAdd = isAdd;
     }
 
-    Movie.prototype.makeArray = function(string) {
-        return string.split(", ");
-    };
-
-    Movie.prototype.addOrSearch = function() {
-        if (this.isAdd) {
-            store.addMovie(this);
-            print.toggleBox();
-            document.getElementById("add-movie-form").reset();
-        } else { console.log(this); }
-    };
-
-    function makeObject(title, rating, year, genre, cover, director, starring, isAdd) {
-        var newMovie = new Movie();
-        if (title.length !== 0) newMovie.title = title;
+    function makeMovie() {
+        let movieTitle = document.getElementById("add-title").value;
+        let movieRating = parseInt(document.getElementById("add-rating").value);
+        let movieYear = parseInt(document.getElementById("add-year").value);
+        let movieGenre = Array.from(document.querySelectorAll(".add-genre:checked")).map((val) => { return val.value; });
+        let movieCover = document.getElementById("add-cover").value;
+        let movieDirector = ("") ? undefined : document.getElementById("add-director").value;
+        let movieStarring = makeArray(document.getElementById("add-starring").value);
+        var newMovie = new Movie(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring);
+        store.addMovie(newMovie);
+        print.toggleBox();
+        document.getElementById("add-movie-form").reset();
+        /*if (title.length !== 0) newMovie.title = title;
         if (rating.length !== 0) newMovie.rating = [rating];
         if (year.length !== 0) newMovie.year = year;
         if (genre.length !== 0) newMovie.genre = genre;
         if (cover.length !== 0) newMovie.cover = cover;
         if (director.length !== 0) newMovie.director = director;
-        if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);
-        newMovie.isAdd = isAdd;
-        newMovie.addOrSearch();
+        if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);*/
     }
 
+    function makeArray(string) {
+        return string.split(", ");
+    };
+
     return {
-        makeObject: makeObject,
+        makeMovie: makeMovie,
         Movie: Movie
     };
 })();
 
+//makeSearchObject
+var search = (function() {
 
-/*2. DATABASE. Module pattern. 
+    function makeSearchObject() {
+        var searchObj = {};
+        let searchTitle = document.getElementById("search-title").value;
+        if (searchTitle.length !== 0) searchObj.title = searchTitle;
+        searchObj.rating = ratingSlider.noUiSlider.get();
+        searchObj.year = yearSlider.noUiSlider.get();
+        let filterGenre = Array.from(document.querySelectorAll(".filter-genre:checked")).map((val) => { return val.value; });
+        if (filterGenre.length !== 0) searchObj.genre = filterGenre;
+        let searchDirector = document.getElementById("search-director").value;
+        if (searchDirector.length !== 0) searchObj.director = searchDirector;
+        let searchStarring = document.getElementById("search-starring").value;
+        if (searchStarring.length !== 0) searchObj.starring = searchStarring;
+        performSearch(searchObj);
+    }
+
+    function filterInterval() {
+        var searchResult = movieDatabase.filter(function(val) {
+            return val.year >= searchFor.year[0] && val.year <= searchFor.year[1];
+        });
+
+    }
+
+    function performSearch(obj) {
+        var searchFor = obj;
+        var movieDatabase = store.getAllMovies();
+
+
+        store.refreshMovies(searchResult);
+
+    }
+
+
+    return {
+        makeSearchObject: makeSearchObject,
+    };
+})();
+
+
+
+/*DATABASE. Module pattern. 
 My existing movies are tucked away in storage here with no risk of manipulation once created.
 The module is providing public endpoints to add a movie, get all movies, get some movies (filtered) and refreshing the list. 
 Data is sent from here to...*/
@@ -146,16 +164,21 @@ var print = (function() {
             var moviesToPrint = movies;
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
-            for (let movie of moviesToPrint) {
-                //let filteredRating = movie.rating.filter((val) => val !== undefined); //kanske kan tas bort senare
+            if (moviesToPrint.length === 0) {
+                wrapper.innerHTML = `<p>No result</p>`;
+            } else {
 
-                wrapper.innerHTML += `<div class="moviebox">
+                for (let movie of moviesToPrint) {
+                    //let filteredRating = movie.rating.filter((val) => val !== undefined); //kanske kan tas bort senare
+
+                    wrapper.innerHTML += `<div class="moviebox">
                                 <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
                                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
                                 <p class="credits tone-down">Director: ${movie.director}</p>
                                 <p class="credits tone-down">Starring: ${joinArray(movie.starring)}</p>
                                 ${printGenres(movie.genre)}
                                 <p class="credits tone-down">Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span> (${movie.rating.length} votes)</p></div>`;
+                }
             }
         },
         toggleBox: function() {
@@ -169,13 +192,13 @@ var print = (function() {
 
 
 //pre-defined movie objects initializing the constructor.
-store.addMovie(new input.Movie("Jurassic Park", 7, 1993, ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg", "Steven Spielberg", ["Sam Neill", "Laura Dern"]));
+store.addMovie(new makeNew.Movie("Jurassic Park", 7, 1993, ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg", "Steven Spielberg", ["Sam Neill", "Laura Dern"]));
 
 
 
 //-----------------------------------------------//
 
-//Sliders for advanced search. Only possible to get values, no input.
+//Sliders for advanced search. Only possible to get values, no makeNew.
 //using noUISlider library - https://refreshless.com/nouislider/
 //with wNumb number formatting library for comfort - https://refreshless.com/wnumb/
 //They use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
