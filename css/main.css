@@ -20,6 +20,7 @@ header {
 
 p {
     margin: 0.5rem 0rem;
+    line-height: 1.5rem;
 }
 
 a {
@@ -63,7 +64,8 @@ input {
 }
 
 #movie-wrapper {
-    width: 75%;
+    max-width: 75%;
+    min-width: 75%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -71,7 +73,8 @@ input {
 
 .moviebox {
     margin: 2rem;
-    max-width: 30%;
+    min-width: 25%;
+    max-width: 25%;
 }
 
 .movie-cover {

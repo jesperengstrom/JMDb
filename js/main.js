@@ -52,7 +52,7 @@ var makeNew = (function() {
 
     Movie.prototype.makeArray = function(string) {
         return string.split(", ");
-    }
+    };
 
     return {
         makeMovie: makeMovie,
@@ -89,7 +89,7 @@ var search = (function() {
         performSearch(searchObj, store.getAllMovies());
     }
 
-    //filter by year interval, ratings interval, genres, 
+    //filter all movies by (in order) year interval, ratings interval, genres, director and title
 
     function performSearch(find, all) {
         var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
@@ -100,12 +100,22 @@ var search = (function() {
         }
 
         if (find.hasOwnProperty("starring")) {
-            console.log("has starring");
             searchResult = filterArray(find, searchResult, "starring");
+        }
+
+        if (find.hasOwnProperty("director")) {
+            searchResult = searchString(find, searchResult, "director");
+        }
+
+        if (find.hasOwnProperty("title")) {
+            searchResult = searchString(find, searchResult, "title");
         }
 
         store.refreshMovies(searchResult);
     }
+    /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
+    (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
+    so I ended up with an if-statement in a loop in a filter function :) */
 
     function filterArray(find, all, prop) {
         return all.filter(function(val) {
@@ -118,6 +128,12 @@ var search = (function() {
             }
             return add;
         }, find);
+    }
+
+    function searchString(find, all, prop) {
+        return all.filter(function(val, i) {
+            return all[i][prop].toLowerCase() == find[prop].toLowerCase();
+        });
     }
 
     return {
@@ -217,14 +233,6 @@ var print = (function() {
         publicCalcRating: calcRating
     };
 })();
-
-
-
-//pre-defined movie objects initializing the constructor.
-store.addMovie(new makeNew.Movie("Jurassic Park", 7, 1993, ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg", "Steven Spielberg", ["Sam Neill", "Laura Dern"]));
-store.addMovie(new makeNew.Movie("Annie Hall", 8, 1977, ["Comedy"], "https://web.calstatela.edu/library/mmc/100/annie_hall.jpg", "Woody Allen", ["Woody Allen", "Diane Keaton"]));
-store.addMovie(new makeNew.Movie("Reine och Mimmi i fjällen", 1, 1997, ["Comedy"], "http://s0.discshop.se/img/front_large/33020/reine_mimmi_i_fjallen.jpg", "Magnus Skogsberg", ["Bertram Heribertson", "Ing-Marie Carlsson"]));
-
 
 
 //-----------------------------------------------//
