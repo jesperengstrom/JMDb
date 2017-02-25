@@ -16,7 +16,11 @@
         <header>
             <h1>JMDb</h1>
             <h2>The Jesper Movie Database</h2>
-            <button class="toggleVisible">Add a movie</button>
+            <div>
+                <button class="toggleAdd">Add a movie</button>
+                <button class="toggleSearch">Advanced search</button>
+            </div>
+
         </header>
     </section>
     <!-- add movie form -->
@@ -77,12 +81,12 @@
             </p>
             <p>
                 <input type="button" value="Submit" id="add-submit">
-                <input type="button" value="Cancel" class="toggleVisible">
+                <input type="button" value="Cancel" class="toggleAdd">
             </p>
         </form>
     </section>
     <!-- advanced search form -->
-    <section id="search-movie-section" class="visible">
+    <section id="search-movie-section" class="hidden">
         <header>
             <h3>Search the JMDb</h3>
         </header>
@@ -130,7 +134,7 @@
             </div>
             <div class="search-row">
                 <input type="button" value="Search" id="search-submit">
-                <input type="button" value="Cancel" class="toggleVisible">
+                <input type="button" value="Cancel" class="toggleSearch">
             </div>
         </form>
     </section>

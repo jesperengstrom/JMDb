@@ -3,9 +3,15 @@ window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getA
 document.getElementById("add-submit").addEventListener("click", () => makeNew.makeMovie());
 document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
-Array.from(document.getElementsByClassName("toggleVisible")).forEach((el) => {
+Array.from(document.getElementsByClassName("toggleAdd")).forEach((el) => {
     el.addEventListener("click", () => {
-        print.toggleBox();
+        print.toggleBox("add");
+    });
+});
+
+Array.from(document.getElementsByClassName("toggleSearch")).forEach((el) => {
+    el.addEventListener("click", () => {
+        print.toggleBox("search");
     });
 });
 
@@ -225,10 +231,19 @@ var print = (function() {
                 }
             }
         },
-        toggleBox: function() {
-            let addBox = document.getElementById("add-movie-section");
-            addBox.classList.toggle("visible");
-            addBox.classList.toggle("hidden");
+        toggleBox: function(el) {
+            if (el == "add") {
+                let addBox = document.getElementById("add-movie-section");
+                addBox.classList.toggle("visible");
+                addBox.classList.toggle("hidden");
+
+            }
+            if (el == "search") {
+                let searchBox = document.getElementById("search-movie-section");
+                searchBox.classList.toggle("visible");
+                searchBox.classList.toggle("hidden");
+            }
+
         },
         publicCalcRating: calcRating
     };
