@@ -16,7 +16,11 @@
         <header>
             <h1>JMDb</h1>
             <h2>The Jesper Movie Database</h2>
-            <button class="toggleVisible">Add a movie</button>
+            <div>
+                <button class="toggleAdd">Add a movie</button>
+                <button class="toggleSearch">Advanced search</button>
+            </div>
+
         </header>
     </section>
     <!-- add movie form -->
@@ -77,38 +81,38 @@
             </p>
             <p>
                 <input type="button" value="Submit" id="add-submit">
-                <input type="button" value="Cancel" class="toggleVisible">
+                <input type="button" value="Cancel" class="toggleAdd">
             </p>
         </form>
     </section>
     <!-- advanced search form -->
-    <section id="search-movie-section" class="visible">
+    <section id="search-movie-section" class="hidden">
         <header>
             <h3>Search the JMDb</h3>
         </header>
         <form id="search-movie-form">
-            <p>
+            <div class="search-row">
                 <label for="search-title">Search for a movie title</label>
                 <input type="text" id="search-title" name="search-title" placeholder="E.g. Eyes Wide Shut" required maxlength="30" />
-            </p>
-            <p>
+            </div>
+            <div class="search-row">
                 <label for="search-director">Search for a director:</label>
                 <input type="text" id="search-director" name="search-director" placeholder="E.g. Stanley Kubrick" maxlength="30" />
-            </p>
-            <p>
+            </div>
+            <div class="search-row">
                 <label for="search-starring">Search for an actor:</label>
                 <input type="text" id="search-starring" name="search-starring" placeholder="E.g. Tom Cruise" maxlength="60" />
-            </p>
-            <p>
+            </div>
+            <div class="search-row">
                 <label for="filter-year">Filter by year:</label>
                 <div class="sliderbox">
                     <div id="slider-year">
                     </div>
                     <!--<input type="number" id="filter-year" name="filter-year" min="1900" max="2020" step="1" value="2017" />-->
                 </div>
-            </p>
+            </div>
 
-            <p>
+            <div class="search-row">
                 <label for="filter-genre">Filter by genre:</label>
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Drama">Drama
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Romantic">Romantic
@@ -120,18 +124,18 @@
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Documentary">Documentary
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Animated">Animated
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Kids">Kids
-            </p>
-            <p>
+            </div>
+            <div class="search-row">
                 <label for="filter-rating">Filter by rating:</label>
                 <div class="sliderbox">
                     <div id="slider-rating">
                     </div>
                 </div>
-            </p>
-            <p>
+            </div>
+            <div class="search-row">
                 <input type="button" value="Search" id="search-submit">
-                <input type="button" value="Cancel" class="toggleVisible">
-            </p>
+                <input type="button" value="Cancel" class="toggleSearch">
+            </div>
         </form>
     </section>
     <!-- movie display section -->
@@ -140,6 +144,7 @@
     <script src="wnumb-1.0.2/wNumb.js"></script>
     <script src="slider/nouislider.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/movies.js"></script>
 
 </body>
 

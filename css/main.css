@@ -19,7 +19,8 @@ header {
 }
 
 p {
-    margin: 0.5rem;
+    margin: 0.5rem 0rem;
+    line-height: 1.5rem;
 }
 
 a {
@@ -37,9 +38,11 @@ input {
 
 #add-movie-section,
 #search-movie-section {
+    width: 50%;
     border: 1px solid black;
     padding: 1rem;
     margin: 1rem;
+    flex-direction: column;
 }
 
 .tone-down {
@@ -61,7 +64,8 @@ input {
 }
 
 #movie-wrapper {
-    width: 75%;
+    max-width: 75%;
+    min-width: 75%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -69,6 +73,8 @@ input {
 
 .moviebox {
     margin: 2rem;
+    min-width: 25%;
+    max-width: 25%;
 }
 
 .movie-cover {
@@ -76,6 +82,7 @@ input {
     height: 350px;
     background-image: url("../images/nocover.jpg");
     background-size: cover;
+    border: 1px solid lightgray;
 }
 
 .inline-link {
@@ -108,5 +115,14 @@ input {
 }
 
 .visible {
-    display: block;
+    display: flex;
+}
+
+#search-movie-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-row {
+    margin: 1rem;
 }
