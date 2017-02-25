@@ -76,10 +76,37 @@ var search = (function() {
         performSearch(searchObj, store.getAllMovies());
     }
 
+    //filter by year interval, ratings interval, genres, 
+
     function performSearch(find, all) {
         var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
             .filter((val) => (print.publicCalcRating(val.rating) >= find.rating[0] && print.publicCalcRating(val.rating) <= find.rating[1]));
+
+        if (find.hasOwnProperty("genre")) {
+            searchResult = filterByGenre(find, searchResult);
+        }
+
         store.refreshMovies(searchResult);
+    }
+
+    function filterByGenre(find, all) {
+        //for (var j of searchResult[i].genre)
+        var genreFilterResult = [];
+        var tempDatabase = all;
+        for (let i = 0; i < find.genre.length; i++) {
+            var lookingforGenre = find.genre[i];
+            for (let j = 0; j < tempDatabase.length; j++) {
+                for (let k = 0; k < tempDatabase[j].genre.length; k++) {
+                    var foundGenre = tempDatabase[j].genre[k];
+                    if (lookingforGenre == foundGenre) {
+                        genreFilterResult.push(tempDatabase[j]);
+                        tempDatabase.splice([j], 1);
+                        break;
+                    }
+                }
+            }
+        }
+        return genreFilterResult;
     }
 
     return {
@@ -113,7 +140,7 @@ var store = (function() {
             return movieDatabase;
         },
         refreshMovies: function(movies) {
-            console.log(movies);
+            //console.log(movies);
             return print.printMovies(movies);
         }
     };
@@ -164,10 +191,10 @@ var print = (function() {
                     wrapper.innerHTML += `<div class="moviebox">
                                 <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
                                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
-                                <p class="credits tone-down">Director: ${movie.director}</p>
-                                <p class="credits tone-down">Starring: ${joinArray(movie.starring)}</p>
+                                <p>Director: <span class="credits tone-down">${movie.director}</span></p>
+                                <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
                                 ${printGenres(movie.genre)}
-                                <p class="credits tone-down">Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span> (${movie.rating.length} votes)</p></div>`;
+                                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span><span class="credits tone-down"> (${movie.rating.length} votes)</span></p></div>`;
                 }
             }
         },
@@ -184,6 +211,8 @@ var print = (function() {
 
 //pre-defined movie objects initializing the constructor.
 store.addMovie(new makeNew.Movie("Jurassic Park", 7, 1993, ["Action", "Thriller", "Sci-fi"], "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg", "Steven Spielberg", ["Sam Neill", "Laura Dern"]));
+store.addMovie(new makeNew.Movie("Annie Hall", 8, 1977, ["Comedy"], "https://web.calstatela.edu/library/mmc/100/annie_hall.jpg", "Woody Allen", ["Woody Allen", "Diane Keaton"]));
+store.addMovie(new makeNew.Movie("Reine och Mimmi i fjällen", 1, 1997, ["Comedy"], "http://s0.discshop.se/img/front_large/33020/reine_mimmi_i_fjallen.jpg", "Magnus Skogsberg", ["Bertram Heribertson", "Ing-Marie Carlsson"]));
 
 
 
