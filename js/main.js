@@ -93,6 +93,31 @@ var search = (function() {
         //for (var j of searchResult[i].genre)
         var genreFilterResult = [];
         var tempDatabase = all;
+
+
+        console.log(find.genre);
+        return all.filter(function(val) {
+            let add = false;
+            for (var i in this.genre) {
+                console.log("looking for " + this.genre[i] + " and currently looking at " + val.genre);
+                if (val.genre.indexOf(this.genre[i]) > -1) {
+                    add = true;
+                }
+            }
+            return add;
+        }, find);
+
+
+
+
+        /*  SKRIVER UT ALLA GENRES I ALL MED FILTER
+        all.filter(function(val) {
+            for (var i in val.genre) {
+                console.log(val.genre[i]);
+            }
+        }); */
+
+        /* FUNKAR, MEN SLUTAR EFTER FÖRSTA TRÄFFEN
         for (let i = 0; i < find.genre.length; i++) {
             var lookingforGenre = find.genre[i];
             for (let j = 0; j < tempDatabase.length; j++) {
@@ -105,8 +130,8 @@ var search = (function() {
                     }
                 }
             }
-        }
-        return genreFilterResult;
+        }*/
+        //return genreFilterResult;
     }
 
     return {
