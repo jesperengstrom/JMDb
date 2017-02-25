@@ -33,8 +33,11 @@ var makeNew = (function() {
         let movieGenre = Array.from(document.querySelectorAll(".add-genre:checked")).map((val) => { return val.value; });
         let movieCover = document.getElementById("add-cover").value;
         let movieDirector = ("") ? undefined : document.getElementById("add-director").value;
-        let movieStarring = makeArray(document.getElementById("add-starring").value);
+        let movieStarring = document.getElementById("add-starring").value;
+
         var newMovie = new Movie(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring);
+        newMovie.starring = newMovie.makeArray(newMovie.starring);
+
         store.addMovie(newMovie);
         print.toggleBox();
         document.getElementById("add-movie-form").reset();
@@ -47,7 +50,7 @@ var makeNew = (function() {
         if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);*/
     }
 
-    function makeArray(string) {
+    Movie.prototype.makeArray = function(string) {
         return string.split(", ");
     }
 
@@ -60,19 +63,29 @@ var makeNew = (function() {
 //SEARCH
 
 var search = (function() {
+    //Kinda unnecessary to make a new prototype for the searches and make Movie it's prototype. I did this to 
+    //give acess to Movie's makeArray function. Could have just made it a public function but this more fun :)
+    function Search() {}
+    Search.prototype = new makeNew.Movie();
 
     function makeSearchObject() {
-        var searchObj = {};
+        var searchObj = new Search();
+
         let searchTitle = document.getElementById("search-title").value;
         if (searchTitle.length !== 0) searchObj.title = searchTitle;
+
         searchObj.rating = ratingSlider.noUiSlider.get();
         searchObj.year = yearSlider.noUiSlider.get();
+
         let filterGenre = Array.from(document.querySelectorAll(".filter-genre:checked")).map((val) => { return val.value; });
         if (filterGenre.length !== 0) searchObj.genre = filterGenre;
+
         let searchDirector = document.getElementById("search-director").value;
         if (searchDirector.length !== 0) searchObj.director = searchDirector;
+
         let searchStarring = document.getElementById("search-starring").value;
-        if (searchStarring.length !== 0) searchObj.starring = searchStarring;
+        if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
+
         performSearch(searchObj, store.getAllMovies());
     }
 
@@ -83,55 +96,28 @@ var search = (function() {
             .filter((val) => (print.publicCalcRating(val.rating) >= find.rating[0] && print.publicCalcRating(val.rating) <= find.rating[1]));
 
         if (find.hasOwnProperty("genre")) {
-            searchResult = filterByGenre(find, searchResult);
+            searchResult = filterArray(find, searchResult, "genre");
+        }
+
+        if (find.hasOwnProperty("starring")) {
+            console.log("has starring");
+            searchResult = filterArray(find, searchResult, "starring");
         }
 
         store.refreshMovies(searchResult);
     }
 
-    function filterByGenre(find, all) {
-        //for (var j of searchResult[i].genre)
-        var genreFilterResult = [];
-        var tempDatabase = all;
-
-
-        console.log(find.genre);
+    function filterArray(find, all, prop) {
         return all.filter(function(val) {
             let add = false;
-            for (var i in this.genre) {
-                console.log("looking for " + this.genre[i] + " and currently looking at " + val.genre);
-                if (val.genre.indexOf(this.genre[i]) > -1) {
+            for (var i in this[prop]) {
+                //console.log("looking for " + this.starring[i] + " and currently looking at " + val.starring);
+                if (val[prop].indexOf(this[prop][i]) > -1) {
                     add = true;
                 }
             }
             return add;
         }, find);
-
-
-
-
-        /*  SKRIVER UT ALLA GENRES I ALL MED FILTER
-        all.filter(function(val) {
-            for (var i in val.genre) {
-                console.log(val.genre[i]);
-            }
-        }); */
-
-        /* FUNKAR, MEN SLUTAR EFTER FÖRSTA TRÄFFEN
-        for (let i = 0; i < find.genre.length; i++) {
-            var lookingforGenre = find.genre[i];
-            for (let j = 0; j < tempDatabase.length; j++) {
-                for (let k = 0; k < tempDatabase[j].genre.length; k++) {
-                    var foundGenre = tempDatabase[j].genre[k];
-                    if (lookingforGenre == foundGenre) {
-                        genreFilterResult.push(tempDatabase[j]);
-                        tempDatabase.splice([j], 1);
-                        break;
-                    }
-                }
-            }
-        }*/
-        //return genreFilterResult;
     }
 
     return {
