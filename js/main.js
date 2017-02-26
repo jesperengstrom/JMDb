@@ -3,15 +3,9 @@ window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getA
 document.getElementById("add-submit").addEventListener("click", () => makeNew.makeMovie());
 document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
-Array.from(document.getElementsByClassName("toggleAdd")).forEach((el) => {
+Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     el.addEventListener("click", () => {
-        print.toggleBox("add");
-    });
-});
-
-Array.from(document.getElementsByClassName("toggleSearch")).forEach((el) => {
-    el.addEventListener("click", () => {
-        print.toggleBox("search");
+        print.toggleBox(event.target.className);
     });
 });
 
@@ -121,7 +115,7 @@ var search = (function() {
     }
     /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
     (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
-    so I ended up with an if-statement in a loop in a filter function :) */
+    so I ended up with an if-statement inside a loop inside a filter function :) */
 
     function filterArray(find, all, prop) {
         return all.filter(function(val) {
@@ -215,7 +209,7 @@ var print = (function() {
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
             if (moviesToPrint.length === 0) {
-                wrapper.innerHTML = `<p>No result</p>`;
+                wrapper.innerHTML = `<p id="no-result">Sorry, no result</p>`;
             } else {
 
                 for (let movie of moviesToPrint) {
@@ -227,23 +221,35 @@ var print = (function() {
                                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
                                 <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
                                 ${printGenres(movie.genre)}
-                                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span><span class="credits tone-down"> (${movie.rating.length} votes)</span></p></div>`;
+                                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span><span class="credits tone-down"> (${movie.rating.length} votes)</span>
+
+                <select class="movieboxRating" name="movieboxRating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected="selected">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+                <input type="button" value="Rate it!" class="addrating">
+            </p></div>`;
                 }
             }
         },
         toggleBox: function(el) {
-            if (el == "add") {
-                let addBox = document.getElementById("add-movie-section");
-                addBox.classList.toggle("visible");
-                addBox.classList.toggle("hidden");
-
-            }
-            if (el == "search") {
-                let searchBox = document.getElementById("search-movie-section");
-                searchBox.classList.toggle("visible");
-                searchBox.classList.toggle("hidden");
-            }
-
+            let id = "add-movie-section";
+            if (el == "toggleButton searchButton") {
+                id = "search-movie-section";
+            };
+            let box = document.getElementById(id);
+            box.classList.toggle("visible");
+            box.classList.toggle("hidden");
         },
         publicCalcRating: calcRating
     };
