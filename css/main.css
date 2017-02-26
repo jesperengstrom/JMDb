@@ -126,3 +126,8 @@ input {
 .search-row {
     margin: 1rem;
 }
+
+#no-result {
+    text-align: center;
+    margin: 3rem;
+}
