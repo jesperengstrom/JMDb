@@ -12,10 +12,13 @@ Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
 /*I basically have a number modules that handle all functionality, for grouping and privacy puropses: 
 as much as possible of their variables and functions are private, they have a public API with functions necessary to communicate with each other.
 
-MAKE NEW. Revealing module pattern. All form makeNew (both add and search) are modified and made into objects using a CONSTRUCTOR
-inside the module. It is then passed on to... */
+Module #1 - to make new movies. Revealing module pattern. The add form input is made into an object using a constructor. 
+To have the constructor inside a closure is also handy because local var idCounter can be stored and provide a unique id 
+to every object passing through the constructor. The movies are then passed on to the storage. */
 
 var makeNew = (function() {
+    var idCounter = 0;
+
     function Movie(title, rating, year, genre, cover = "images/nocover.jpg", director = "N/A", starring = "N/A") {
         this.title = title;
         this.rating = [rating];
@@ -24,6 +27,7 @@ var makeNew = (function() {
         this.starring = starring;
         this.genre = genre;
         this.cover = cover;
+        this.id = idCounter++;
     }
 
     function makeMovie() {
@@ -89,7 +93,7 @@ var search = (function() {
         performSearch(searchObj, store.getAllMovies());
     }
 
-    //filter all movies by (in order) year interval, ratings interval, genres, director and title
+    //filter all movies by (in this order:) year interval, ratings interval, genres, director and title
 
     function performSearch(find, all) {
         var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
@@ -113,10 +117,10 @@ var search = (function() {
 
         store.refreshMovies(searchResult);
     }
+
     /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
     (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
-    so I ended up with an if-statement inside a loop inside a filter function :) */
-
+    so I ended up with an if-statement inside a loop inside a filter method :) */
     function filterArray(find, all, prop) {
         return all.filter(function(val) {
             let add = false;
@@ -148,7 +152,11 @@ My existing movies are tucked away in storage here with no risk of manipulation 
 The module is providing public endpoints to add a movie, get all movies, get some movies (filtered) and refreshing the list. 
 Data is sent from here to...*/
 
+
 var store = (function() {
+
+    /*there's one object hardcoded into the movie database object literal. Since the the object constructor can handle only one 
+    rating from the form and since additional ratings are not saved on page reload, this is to demonstrate how multiple ratings are rendered. */
     var movieDatabase = [{
         title: "Silence Of The Lambs",
         rating: [7, 8, 9, 6],
@@ -156,18 +164,28 @@ var store = (function() {
         director: "Jonathan Demme",
         starring: ["Jodie Foster", "Anthony Hopkins"],
         genre: ["Horror", "Thriller"],
-        cover: "https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg"
+        cover: "https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg",
+        id: 0
     }, ];
     return {
         addMovie: function(obj) {
-            movieDatabase.unshift(obj);
+            movieDatabase.push(obj);
             return this.refreshMovies(this.getAllMovies());
+        },
+        /* I didn't come up with a way to add event listeners dynamically to ratings buttons, i simply added an onclick call with the button element. 
+        it's id number is the same as the ratings property id and the target movie's index. Maybe not the most solid solution :/ */
+        addRating: function(button) {
+            let id = parseInt(button.id.split("-")[1]);
+            let rating = parseInt(document.getElementById("selectId-" + id).value);
+            movieDatabase[id].rating.push(rating);
+            return this.refreshMovies(this.getAllMovies());
+
         },
         getAllMovies: function() {
             return movieDatabase;
         },
         refreshMovies: function(movies) {
-            //console.log(movies);
+            console.log(movies);
             return print.printMovies(movies);
         }
     };
@@ -180,6 +198,11 @@ var print = (function() {
 
     function setGradeColor(grade) {
         return grade > 5 ? "goodgrade" : "badgrade";
+    }
+
+    function storeLatestRender(moviesToPrint) {
+        var latest = moviesToPrint;
+        return latest;
     }
 
     function printGenres(arr) {
@@ -206,24 +229,30 @@ var print = (function() {
     return {
         printMovies: function(movies) {
             var moviesToPrint = movies;
+            storeLatestRender(moviesToPrint);
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
             if (moviesToPrint.length === 0) {
                 wrapper.innerHTML = `<p id="no-result">Sorry, no result</p>`;
             } else {
 
-                for (let movie of moviesToPrint) {
+                //for (let movie of moviesToPrint) {
+                /* The movies are pushed into the array so that their id:s are the same as their index. 
+                 I still want the latest movie displayed first though, that's why the array is printed out in reverse.*/
+                for (let i = moviesToPrint.length - 1; i >= 0; i--) {
+                    let movie = moviesToPrint[i];
                     //let filteredRating = movie.rating.filter((val) => val !== undefined); //kanske kan tas bort senare
 
-                    wrapper.innerHTML += `<div class="moviebox">
-                                <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
-                                <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
-                                <p>Director: <span class="credits tone-down">${movie.director}</span></p>
-                                <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
-                                ${printGenres(movie.genre)}
-                                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span><span class="credits tone-down"> (${movie.rating.length} votes)</span>
-
-                <select class="movieboxRating" name="movieboxRating">
+                    wrapper.innerHTML += `
+                <div class="moviebox">
+                <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
+                <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
+                <p>Director: <span class="credits tone-down">${movie.director}</span></p>
+                <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
+                ${printGenres(movie.genre)}                    
+                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span>
+                <span class="credits tone-down"> (${movie.rating.length} votes)</span>
+                <select id="selectId-${movie.id}">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -236,9 +265,13 @@ var print = (function() {
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
-            </select>
-                <input type="button" value="Rate it!" class="addrating">
-            </p></div>`;
+                </select>
+                <input type="button" value="Rate it!" class="rateBtnClass" id="rateBtnId-${movie.id}" onclick="store.addRating(this)">
+                </p></div>
+
+                `;
+
+
                 }
             }
         },
@@ -258,10 +291,10 @@ var print = (function() {
 
 //-----------------------------------------------//
 
-//Sliders for advanced search. Only possible to get values, no makeNew.
+//Sliders for advanced search. Only possible to get values, no input allowed.
 //using noUISlider library - https://refreshless.com/nouislider/
-//with wNumb number formatting library for comfort - https://refreshless.com/wnumb/
-//They use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
+//with wNumb number formatting library - https://refreshless.com/wnumb/
+//These libraries use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
 
 var yearSlider = document.getElementById("slider-year");
 var ratingSlider = document.getElementById("slider-rating");
