@@ -295,16 +295,17 @@ var print = (function() {
                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
                 <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
+                
                 <div>
                 ${printGenres(movie.genre)}
-                <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a>
                 </div>
-                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${editGenre(movie)}
-                <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
-                </a>
-                </div>          
+
                 <div class="nobreak"><p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
                 <span class="credits tone-down"> (${movie.rating.length} votes)</span>
+                </p></div>
+
+                <div>
+                <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a> |
                 <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>
                 <select id="selectId-${movie.id}">
                 <option value="1">1</option>
@@ -320,8 +321,13 @@ var print = (function() {
                 <option value="9">9</option>
                 <option value="10">10</option>
                 </select></div>
-                
-                </p></div>
+
+                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${editGenre(movie)}
+                <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
+                </a>
+                </div>          
+
+                </div>
 
                 `;
                 }

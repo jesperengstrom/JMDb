@@ -13,7 +13,7 @@
 <body>
     <!-- page header -->
     <section is="page-header-section">
-        <header>
+        <header class="flex-column">
             <h1>JMDb</h1>
             <h2>The Jesper Movie Database</h2>
             <div>
@@ -32,47 +32,82 @@
         </header>
     </section>
     <!-- add movie form -->
-    <section id="add-movie-section" class="hidden">
+    <section id="add-movie-section" class="hidden flex-column">
         <header>
             <h3>Add a new movie</h3>
         </header>
-        <form id="add-movie-form">
-            <p>
-                <label for="add-title">Title:</label>
-                <input type="text" id="add-title" name="add-title" placeholder="Add a movie title" required maxlength="30" />
-            </p>
-            <p>
-                <label for="add-year">Year of premiere:</label>
-                <input type="number" id="add-year" name="add-year" min="1920" max="2020" step="1" value="2017" />
-            </p>
-            <p>
-                <label for="add-director">Director:</label>
-                <input type="text" id="add-director" name="add-director" placeholder="Who directed it?" maxlength="30" />
-            </p>
-            <p>
-                <label for="add-starring">Lead actors:</label>
-                <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
-            </p>
-            <p>
-                <label for="add-genre">Genre:</label>
-                <input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama
-                <input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic
-                <input type="checkbox" class="add-genre" name="add-genre" value="Comedy">Comedy
-                <input type="checkbox" class="add-genre" name="add-genre" value="Thriller">Thriller
-                <input type="checkbox" class="add-genre" name="add-genre" value="Action">Action
-                <input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror
-                <input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Sci-fi
-                <input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary
-                <input type="checkbox" class="add-genre" name="add-genre" value="Animated">Animated
-                <input type="checkbox" class="add-genre" name="add-genre" value="Kids">Kids
-            </p>
-            <p>
-                <label for="add-cover">Cover:</label>
-                <input type="url" id="add-cover" name="add-cover" placeholder="URL (min 250px x 350px)" />
-            </p>
-            <p>
-                <label for="add-rating">Rate it!</label>
-                <select id="add-rating" name="add-rating">
+        <form id="add-movie-form" class="flex-column margin-top">
+            <div class="flex-row">
+                <div class="flex-column margin-right">
+                    <div class="flex-row">
+                        <p>
+                            <label for="add-title">Title:</label>
+                            <input type="text" id="add-title" name="add-title" placeholder="Add a movie title" required maxlength="30" />
+                        </p>
+                    </div>
+                    <div class="flex-row">
+                        <p>
+                            <label for="add-director">Director:</label>
+                            <input type="text" id="add-director" name="add-director" placeholder="Who directed it?" maxlength="30" />
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-column">
+                    <div class="flex-row">
+                        <p>
+                            <label for="add-year">Year of premiere:</label>
+                            <input type="number" id="add-year" name="add-year" min="1920" max="2020" step="1" value="2017" />
+                        </p>
+                    </div>
+                    <div class="flex-row">
+                        <p>
+                            <label for="add-starring">Lead actors:</label>
+                            <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row margin-top">
+                <p>
+                    <label for="add-genre">Genre:</label>
+                </p>
+
+                <div class="genre flex-row">
+                    <p>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Comedy">Comedy</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Thriller">Thriller</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Action">Action</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Sci-fi</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Animated">Animated</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Kids">Kids</div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row margin-top">
+                <div class="flex-row margin-right">
+                    <p>
+                        <label for="add-cover">Cover:</label>
+                        <input type="url" id="add-cover" name="add-cover" placeholder="URL (min 250px x 350px)" />
+                    </p>
+                </div>
+                <div class="flex-row margin-right">
+                    <p>
+                        <label for="add-rating">Rate it!</label>
+                        <select id="add-rating" name="add-rating">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -86,19 +121,25 @@
                 <option value="9">9</option>
                 <option value="10">10</option>
             </select>
-            </p>
-            <p>
-                <input type="button" value="Submit" id="add-submit">
-                <input type="button" value="Cancel" class="toggleButton addButton">
-            </p>
+
+                    </p>
+                </div>
+                <div class="flex-row">
+                    <p>
+                        <a class="inline-link" id="add-submit">&#10148; Submit</a>
+                        <a class="inline-link toggleButton addButton">&#10148; Cancel</a>
+                    </p>
+                </div>
+            </div>
+
         </form>
     </section>
     <!-- advanced search form -->
-    <section id="search-movie-section" class="hidden">
+    <section id="search-movie-section" class="hidden flex-column">
         <header>
             <h3>Search the JMDb</h3>
         </header>
-        <form id="search-movie-form">
+        <form id="search-movie-form" class="flex-column">
             <div class="search-row">
                 <label for="search-title">Search for a movie title</label>
                 <input type="text" id="search-title" name="search-title" placeholder="E.g. Eyes Wide Shut" required maxlength="30" />
@@ -147,7 +188,7 @@
         </form>
     </section>
     <!-- movie display section -->
-    <section id="movie-wrapper">
+    <section id="movie-wrapper" class="flex-row">
     </section>
     <script src="wnumb-1.0.2/wNumb.js"></script>
     <script src="slider/nouislider.min.js"></script>

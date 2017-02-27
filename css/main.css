@@ -13,18 +13,24 @@ body {
 }
 
 header {
-    display: flex;
     align-items: center;
-    flex-direction: column;
 }
 
 h1 {
     font-size: 4rem;
     margin: 1rem;
+    background: #f5de50;
+    border: 10px solid #f5de50;
+    border-radius: 10%;
 }
 
 h2 {
     margin-top: 0.5rem;
+}
+
+h3 {
+    text-align: center;
+    margin: 0.5rem;
 }
 
 p {
@@ -42,21 +48,42 @@ a:hover {
     text-decoration: underline;
 }
 
-input {
+label {
     padding: 0.25rem;
+}
+
+input [type|="text"] {
+    margin: 1rem 2rem;
 }
 
 hr {
     width: 45%;
 }
 
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.margin-right {
+    margin-right: 2rem;
+}
+
+.margin-top {
+    margin-top: 1rem;
+}
+
 #add-movie-section,
 #search-movie-section {
-    width: 50%;
+    width: 40%;
     border: 1px solid black;
     padding: 1rem;
     margin: 1rem;
-    flex-direction: column;
 }
 
 .tone-down {
@@ -81,8 +108,6 @@ hr {
     margin-top: 1rem;
     max-width: 75%;
     min-width: 75%;
-    display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
 }
 
@@ -133,12 +158,7 @@ hr {
 }
 
 .visible {
-    display: flex;
-}
-
-#search-movie-form {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
 }
 
 .search-row {
