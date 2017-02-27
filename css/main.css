@@ -18,6 +18,15 @@ header {
     flex-direction: column;
 }
 
+h1 {
+    font-size: 4rem;
+    margin: 1rem;
+}
+
+h2 {
+    margin-top: 0.5rem;
+}
+
 p {
     margin: 0.5rem 0rem;
     line-height: 1.5rem;
@@ -69,6 +78,7 @@ hr {
 }
 
 #movie-wrapper {
+    margin-top: 1rem;
     max-width: 75%;
     min-width: 75%;
     display: flex;
@@ -91,7 +101,10 @@ hr {
 }
 
 .inline-link {
-    margin: 0.5rem;
+    color: darkred;
+    margin: 0.5rem 0rem;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 .inline-link,
@@ -116,7 +129,7 @@ hr {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .visible {
@@ -135,4 +148,21 @@ hr {
 #no-result {
     text-align: center;
     margin: 3rem;
+}
+
+.edit-genre-box {
+    border: 1px solid lightslategrey;
+    padding: 0.5rem;
+    margin: 1rem 0rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.genre {
+    font-size: 0.75rem;
+}
+
+.nobreak {
+    white-space: nowrap;
 }

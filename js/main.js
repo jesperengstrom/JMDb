@@ -172,13 +172,21 @@ var store = (function() {
             movieDatabase.push(obj);
         },
 
-        /* I didn't come up with a way to add event listeners dynamically to ratings buttons, i simply added an onclick call with the button element. 
-        it's id number is the same as the ratings property id and the target movie's index. Maybe not the most solid solution :/ */
+        /* I didn't come up with a way to add event listeners dynamically to ratings/edit genre buttons, so i simply added onclick calls 
+        with the button element passed on. it's id number is the same as the ratings property id and the target movie's index. 
+        Maybe not the most solid solution but it works :/ */
         addRating: function(button) {
             let id = parseInt(button.id.split("-")[1]);
             let rating = parseInt(document.getElementById("selectId-" + id).value);
             movieDatabase[id].rating.push(rating);
             movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
+            return this.refreshMovies(this.getAllMovies());
+
+        },
+        editGenre: function(button) {
+            let id = parseInt(button.id.split("-")[1]);
+            let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
+            movieDatabase[id].genre = addGenre;
             return this.refreshMovies(this.getAllMovies());
 
         },
@@ -229,8 +237,33 @@ var print = (function() {
         for (let el in arr) {
             genreCode += `<div class="genre-box">${arr[el]}</div>`;
         }
-        genreCode += `<span class="inline-link"><a href="#">Edit genre</a></span>`;
         return genreCode;
+    }
+
+    function editGenre(movie) {
+        let curGenre = movie.genre;
+        let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
+        genreBoxes = "";
+        for (let all of allGenres) {
+            let added = false;
+            for (let has of curGenre) {
+                if (all == has) {
+                    genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}" checked>${all}</div>`;
+                    added = true;
+                }
+            }
+            if (!added) genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}">${all}</div>`;
+        }
+        return genreBoxes;
+    }
+
+    function toggleGenreBox(button) {
+        console.log(event.target.id);
+        let id = event.target.id.split("-")[1];
+        let box = document.getElementById("edit-genre-box-" + id);
+        console.log(box);
+        box.classList.toggle("visible");
+        box.classList.toggle("hidden");
     }
 
     function joinArray(val) {
@@ -262,9 +295,17 @@ var print = (function() {
                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
                 <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
-                ${printGenres(movie.genre)}                    
-                <p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
+                <div>
+                ${printGenres(movie.genre)}
+                <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a>
+                </div>
+                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${editGenre(movie)}
+                <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
+                </a>
+                </div>          
+                <div class="nobreak"><p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
                 <span class="credits tone-down"> (${movie.rating.length} votes)</span>
+                <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>
                 <select id="selectId-${movie.id}">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -278,8 +319,8 @@ var print = (function() {
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
-                </select>
-                <input type="button" value="Rate it!" class="rateBtnClass" id="rateBtnId-${movie.id}" onclick="store.addRating(this)">
+                </select></div>
+                
                 </p></div>
 
                 `;
@@ -291,12 +332,13 @@ var print = (function() {
             let id = "add-movie-section";
             if (el == "toggleButton searchButton") {
                 id = "search-movie-section";
-            };
+            }
             let box = document.getElementById(id);
             box.classList.toggle("visible");
             box.classList.toggle("hidden");
         },
-        getLastRender: storeLatestRender
+        getLastRender: storeLatestRender,
+        toggleGenreBox: toggleGenreBox
     };
 })();
 
