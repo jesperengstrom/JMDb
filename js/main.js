@@ -2,6 +2,9 @@
 window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
 document.getElementById("add-submit").addEventListener("click", () => makeNew.makeMovie());
 document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
+document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
+document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
+document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
 Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     el.addEventListener("click", () => {
@@ -17,7 +20,7 @@ To have the constructor inside a closure is also handy because local var idCount
 to every object passing through the constructor. The movies are then passed on to the storage. */
 
 var makeNew = (function() {
-    var idCounter = 0;
+    var idCounter = -1;
 
     function Movie(title, rating, year, genre, cover = "images/nocover.jpg", director = "N/A", starring = "N/A") {
         this.title = title;
@@ -28,7 +31,17 @@ var makeNew = (function() {
         this.genre = genre;
         this.cover = cover;
         this.id = idCounter++;
+        this.averageRating = this.getAverageRating();
     }
+
+    Movie.prototype.getAverageRating = function() {
+        let rating = parseFloat((this.rating.reduce((prev, cur) => prev + cur) / this.rating.length).toFixed(1));
+        return rating;
+    };
+
+    Movie.prototype.makeArray = function(string) {
+        return string.split(", ");
+    };
 
     function makeMovie() {
         let movieTitle = document.getElementById("add-title").value;
@@ -43,6 +56,7 @@ var makeNew = (function() {
         newMovie.starring = newMovie.makeArray(newMovie.starring);
 
         store.addMovie(newMovie);
+        store.refreshMovies(store.getAllMovies());
         print.toggleBox();
         document.getElementById("add-movie-form").reset();
         /*if (title.length !== 0) newMovie.title = title;
@@ -53,10 +67,6 @@ var makeNew = (function() {
         if (director.length !== 0) newMovie.director = director;
         if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);*/
     }
-
-    Movie.prototype.makeArray = function(string) {
-        return string.split(", ");
-    };
 
     return {
         makeMovie: makeMovie,
@@ -96,8 +106,9 @@ var search = (function() {
     //filter all movies by (in this order:) year interval, ratings interval, genres, director and title
 
     function performSearch(find, all) {
+
         var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
-            .filter((val) => (print.publicCalcRating(val.rating) >= find.rating[0] && print.publicCalcRating(val.rating) <= find.rating[1]));
+            .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
 
         if (find.hasOwnProperty("genre")) {
             searchResult = filterArray(find, searchResult, "genre");
@@ -120,7 +131,7 @@ var search = (function() {
 
     /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
     (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
-    so I ended up with an if-statement inside a loop inside a filter method :) */
+    so I ended up with an indexOf-method in an if-statement inside a loop inside a filter method :) */
     function filterArray(find, all, prop) {
         return all.filter(function(val) {
             let add = false;
@@ -154,35 +165,44 @@ Data is sent from here to...*/
 
 
 var store = (function() {
-
-    /*there's one object hardcoded into the movie database object literal. Since the the object constructor can handle only one 
-    rating from the form and since additional ratings are not saved on page reload, this is to demonstrate how multiple ratings are rendered. */
-    var movieDatabase = [{
-        title: "Silence Of The Lambs",
-        rating: [7, 8, 9, 6],
-        year: 1991,
-        director: "Jonathan Demme",
-        starring: ["Jodie Foster", "Anthony Hopkins"],
-        genre: ["Horror", "Thriller"],
-        cover: "https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg",
-        id: 0
-    }, ];
+    //This is the array where the movies are stored.
+    var movieDatabase = [];
     return {
         addMovie: function(obj) {
             movieDatabase.push(obj);
-            return this.refreshMovies(this.getAllMovies());
         },
+
         /* I didn't come up with a way to add event listeners dynamically to ratings buttons, i simply added an onclick call with the button element. 
         it's id number is the same as the ratings property id and the target movie's index. Maybe not the most solid solution :/ */
         addRating: function(button) {
             let id = parseInt(button.id.split("-")[1]);
             let rating = parseInt(document.getElementById("selectId-" + id).value);
             movieDatabase[id].rating.push(rating);
+            movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
             return this.refreshMovies(this.getAllMovies());
 
         },
         getAllMovies: function() {
             return movieDatabase;
+
+        },
+        getTopRatedMovie: function() {
+            let allMovies = this.getAllMovies();
+            let topRatedArr = [];
+            topRatedArr.push(allMovies.reduce(function(prev, cur) {
+                return prev.averageRating > cur.averageRating ? prev : cur;
+            }));
+            return topRatedArr;
+
+        },
+        getWorstRatedMovie: function() {
+            let allMovies = this.getAllMovies();
+            let lowRatedArr = [];
+            lowRatedArr.push(allMovies.reduce(function(prev, cur) {
+                return prev.averageRating < cur.averageRating ? prev : cur;
+            }));
+            return lowRatedArr;
+
         },
         refreshMovies: function(movies) {
             console.log(movies);
@@ -202,7 +222,6 @@ var print = (function() {
 
     function storeLatestRender(moviesToPrint) {
         var latest = moviesToPrint;
-        return latest;
     }
 
     function printGenres(arr) {
@@ -221,26 +240,20 @@ var print = (function() {
         return val;
     }
 
-    function calcRating(arr) {
-        let rating = parseFloat((arr.reduce((prev, cur) => prev + cur) / arr.length).toFixed(1));
-        return rating;
-    }
-
     return {
         printMovies: function(movies) {
             var moviesToPrint = movies;
-            storeLatestRender(moviesToPrint);
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
             if (moviesToPrint.length === 0) {
                 wrapper.innerHTML = `<p id="no-result">Sorry, no result</p>`;
             } else {
 
-                //for (let movie of moviesToPrint) {
                 /* The movies are pushed into the array so that their id:s are the same as their index. 
                  I still want the latest movie displayed first though, that's why the array is printed out in reverse.*/
                 for (let i = moviesToPrint.length - 1; i >= 0; i--) {
                     let movie = moviesToPrint[i];
+
                     //let filteredRating = movie.rating.filter((val) => val !== undefined); //kanske kan tas bort senare
 
                     wrapper.innerHTML += `
@@ -250,7 +263,7 @@ var print = (function() {
                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
                 <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
                 ${printGenres(movie.genre)}                    
-                <p>Rating: <span class="${setGradeColor(calcRating(movie.rating))}">${calcRating(movie.rating)}</span>
+                <p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
                 <span class="credits tone-down"> (${movie.rating.length} votes)</span>
                 <select id="selectId-${movie.id}">
                 <option value="1">1</option>
@@ -270,10 +283,9 @@ var print = (function() {
                 </p></div>
 
                 `;
-
-
                 }
             }
+            storeLatestRender(moviesToPrint);
         },
         toggleBox: function(el) {
             let id = "add-movie-section";
@@ -284,7 +296,7 @@ var print = (function() {
             box.classList.toggle("visible");
             box.classList.toggle("hidden");
         },
-        publicCalcRating: calcRating
+        getLastRender: storeLatestRender
     };
 })();
 
