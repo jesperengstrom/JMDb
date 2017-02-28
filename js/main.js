@@ -1,4 +1,5 @@
-//event handlers
+//Event handlers that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
+
 window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
 document.getElementById("add-submit").addEventListener("click", () => {
     let title = document.getElementById("add-title").value;
@@ -16,10 +17,9 @@ Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     });
 });
 
-
-/*Module #1 - to make new movies. The add form input is made into an object using a constructor. 
-To have the constructor inside a closure is also handy because local var idCounter can be stored and provide a unique id 
-to every object passing through the constructor. The movies are then passed on to the storage. */
+/*Module #1 - make new movies. The add form input is collected and made into an object using a constructor and some helper methods which are set to 
+the constructor prototype. To have the constructor inside a closure is also handy because local var idCounter can be stored outside and provide 
+a unique id to every object passing through the constructor (would otherwise have been reset). The movies are then passed on to the storage. */
 
 var makeNew = (function() {
     var idCounter = -1;
@@ -71,9 +71,7 @@ var makeNew = (function() {
 
 
 /*module #2 - Database. My existing movies are tucked away in storage here with no risk of manipulation once created.
-The module is providing public endpoints to add a movie, get all movies, get some movies (filtered) and refreshing the list. 
-Data is sent from here to...*/
-
+The module is providing public endpoints which are basically CRUD-methods (minus delete) to meet my specific needs*/
 
 var store = (function() {
     //This is the array where all the movies are stored.
@@ -82,28 +80,6 @@ var store = (function() {
     var currentSelection = [];
 
     return {
-        addMovie: function(obj) {
-            movieDatabase.push(obj);
-        },
-
-        /* I didn't come up with a way to add event listeners dynamically to ratings/edit genre buttons, so i simply added onclick calls 
-        with the button element passed on. it's id number is the same as the ratings property id and the target movie's index. 
-        Maybe not the most solid solution but it works :/ */
-        addRating: function(button) {
-            let id = parseInt(button.id.split("-")[1]);
-            let rating = parseInt(document.getElementById("selectId-" + id).value);
-            movieDatabase[id].rating.push(rating);
-            movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
-            return this.refreshMovies(this.getCurrentSelection());
-
-        },
-        editGenre: function(button) {
-            let id = parseInt(button.id.split("-")[1]);
-            let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
-            movieDatabase[id].genre = addGenre;
-            return this.refreshMovies(this.getCurrentSelection());
-
-        },
         getAllMovies: function() {
             return movieDatabase;
 
@@ -126,9 +102,30 @@ var store = (function() {
             return lowRatedArr;
 
         },
-
         refreshMovies: function(movies) {
             return print.printMovies(movies);
+        },
+
+        addMovie: function(obj) {
+            movieDatabase.push(obj);
+        },
+
+        /* I failed to add event listeners dynamically to ratings/edit genre buttons, so i simply added onclick calls 
+        with the button element passed on. it's id number is the same as the ratings property id and the target movie's index. 
+        Maybe not the most solid solution but it works :/ */
+        addRating: function(button) {
+            let id = parseInt(button.id.split("-")[1]);
+            let rating = parseInt(document.getElementById("selectId-" + id).value);
+            movieDatabase[id].rating.push(rating);
+            movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
+            return this.refreshMovies(this.getCurrentSelection());
+            //Same solution here...
+        },
+        editGenre: function(button) {
+            let id = parseInt(button.id.split("-")[1]);
+            let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
+            movieDatabase[id].genre = addGenre;
+            return this.refreshMovies(this.getCurrentSelection());
         },
         //stores and gets current selection to prevent all movies from showing up when we add a grade or genre.
         storeCurrentSelection: function(arr) {
@@ -141,12 +138,13 @@ var store = (function() {
 })();
 
 
-/*Module #3 - Search. This ectrats the data from the search form making it a search object. It then sends the object to the performSearch
+/*Module #3 - Search. This one ectracts the data from the search form making it a search object. It then sends the object to the performSearch
 function that compares it to the movie databases' movie prop/values using some helper methods. It returns a search result array that is 
 stored and sent to the print module.*/
 
 var search = (function() {
-    //Kinda unnecessary to make a new prototype for the searches and make Movie it's prototype. I did this to 
+
+    //Kinda unnecessary to have a new constructor for the searches and make Movie it's prototype. I did this to 
     //give acess to Movie's makeArray function. Could have just made it a public function but this more fun :)
     function Search() {}
     Search.prototype = new makeNew.Movie();
@@ -154,6 +152,8 @@ var search = (function() {
     function makeSearchObject() {
         var searchObj = new Search();
 
+        //rest of this func checks if the input fields have something in them. if not, that search property will be left out.
+        //year and ratings span do always have a value (and is set to maximum by default).
         let searchTitle = document.getElementById("search-title").value;
         if (searchTitle.length !== 0) searchObj.title = searchTitle;
 
@@ -172,7 +172,8 @@ var search = (function() {
         performSearch(searchObj, store.getAllMovies());
     }
 
-    //filter all movies by search object in this order: year interval, ratings interval, genres, director and title.
+    //All the movies are then filtered by the search object in this order: 
+    //year interval, ratings interval, genres, director and title.
     function performSearch(find, all) {
 
         var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
@@ -230,7 +231,6 @@ var print = (function() {
         return grade > 5 ? "goodgrade" : "badgrade";
     }
 
-
     function printGenres(arr) {
         let genreCode = "";
         for (let el in arr) {
@@ -239,6 +239,8 @@ var print = (function() {
         return genreCode;
     }
 
+    //this very unpure and kinda tedious function renders the edit-genres-box for each movie. It's current genres has to be checked,  
+    //hence all the looping.
     function editGenre(movie) {
         let curGenre = movie.genre;
         let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
@@ -327,7 +329,7 @@ var print = (function() {
                 `;
                 }
             }
-            //sends the current selection to storage so we can display it again
+            //sends the current selection to storage so we can display it again.
             store.storeCurrentSelection(moviesToPrint);
         },
         toggleBox: function(el) {
@@ -346,9 +348,9 @@ var print = (function() {
 
 //-----------------------------------------------//
 
-//Sliders for advanced search. Only possible to get values, no input allowed.
-//using noUISlider library - https://refreshless.com/nouislider/
-//with wNumb number formatting library - https://refreshless.com/wnumb/
+//Sliders for the search. Only possible to get values, no input allowed.
+//Made using the noUISlider library - https://refreshless.com/nouislider/
+//with help from the wNumb number formatting library - https://refreshless.com/wnumb/
 //These libraries use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
 
 
