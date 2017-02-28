@@ -1,5 +1,5 @@
 ## Design Pattern Assignment - Movie Database
-#Jesper Engström FEND16
+###Jesper Engström FEND16
 
 Jag har valt att använda olika module patterns till min uppgift. I princip har jag fyra moduler som hanterar all funktionalitet: 
 _makeNew, store, search och print_.
