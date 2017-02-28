@@ -335,6 +335,7 @@ var print = (function() {
             storeLatestRender(moviesToPrint);
         },
         toggleBox: function(el) {
+            console.log(el);
             let id = "add-movie-section";
             if (el == "toggleButton searchButton") {
                 id = "search-movie-section";

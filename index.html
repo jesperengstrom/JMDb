@@ -16,7 +16,7 @@
         <header class="flex-column">
             <h1>JMDb</h1>
             <h2>The Jesper Movie Database</h2>
-            <div>
+            <div class="margin-bottom">
                 <hr>
                 <a class="toggleButton addButton">Add a movie</a>
                 <span>|</span>
@@ -87,7 +87,7 @@
                             <div><input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror</div>
                         </div>
                         <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Sci-fi</div>
+                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Science Fiction</div>
                             <div><input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary</div>
                         </div>
                         <div class="flex-column">
@@ -139,29 +139,68 @@
         <header>
             <h3>Search the JMDb</h3>
         </header>
-        <form id="search-movie-form" class="flex-column">
-            <div class="search-row">
-                <label for="search-title">Search for a movie title</label>
-                <input type="text" id="search-title" name="search-title" placeholder="E.g. Eyes Wide Shut" required maxlength="30" />
+        <form id="search-movie-form" class="flex-column search-row">
+            <div class="flex-row">
+                <p>Search for a...</p>
             </div>
-            <div class="search-row">
-                <label for="search-director">Search for a director:</label>
-                <input type="text" id="search-director" name="search-director" placeholder="E.g. Stanley Kubrick" maxlength="30" />
-            </div>
-            <div class="search-row">
-                <label for="search-starring">Search for an actor:</label>
-                <input type="text" id="search-starring" name="search-starring" placeholder="E.g. Tom Cruise" maxlength="60" />
+            <div class="flex-row">
+                <div class="search-row flex-row">
+                    <p>
+                        <label for="search-title">Title:</label>
+                        <input type="text" id="search-title" name="search-title" placeholder="E.g. Eyes Wide Shut" required maxlength="30" />
+                    </p>
+                </div>
+                <div class="search-row">
+                    <p>
+                        <label for="search-director">Director:</label>
+                        <input type="text" id="search-director" name="search-director" placeholder="E.g. Stanley Kubrick" maxlength="30" />
+                    </p>
+                </div>
+                <div class="search-row">
+                    <p>
+                        <label for="search-starring">Actor:</label>
+                        <input type="text" id="search-starring" name="search-starring" placeholder="E.g. Tom Cruise" maxlength="60" />
+                    </p>
+                </div>
             </div>
             <div class="search-row">
                 <label for="filter-year">Filter by year:</label>
                 <div class="sliderbox">
                     <div id="slider-year">
                     </div>
-                    <!--<input type="number" id="filter-year" name="filter-year" min="1900" max="2020" step="1" value="2017" />-->
+                </div>
+            </div>
+            <div class="flex-row margin-top">
+                <p class="margin-right">
+                    <label for="filter-genre">Filter by genre:</label>
+                </p>
+                <div class="genre flex-row">
+                    <p>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Drama">Drama</div>
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Romantic">Romantic</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Comedy">Comedy</div>
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Thriller">Thriller</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Action">Action</div>
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Horror">Horror</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Sci-fi">Science Fiction</div>
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Documentary">Documentary</div>
+                        </div>
+                        <div class="flex-column">
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Animated">Animated</div>
+                            <div><input type="checkbox" class="filter-genre" name="filter-genre" value="Kids">Kids</div>
+                        </div>
+                    </p>
                 </div>
             </div>
 
-            <div class="search-row">
+            <!--<div class="search-row">
                 <label for="filter-genre">Filter by genre:</label>
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Drama">Drama
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Romantic">Romantic
@@ -173,22 +212,22 @@
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Documentary">Documentary
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Animated">Animated
                 <input type="checkbox" class="filter-genre" name="filter-genre" value="Kids">Kids
-            </div>
-            <div class="search-row">
+            </div>-->
+            <div class="margin-top">
                 <label for="filter-rating">Filter by rating:</label>
                 <div class="sliderbox">
                     <div id="slider-rating">
                     </div>
                 </div>
             </div>
-            <div class="search-row">
-                <input type="button" value="Search" id="search-submit">
-                <input type="button" value="Cancel" class="toggleButton searchButton">
-            </div>
+            <p class="search-row">
+                <a id="search-submit"><span class="inline-link">&#10148; Search</span></a>
+                <a class="inline-link"><span class="toggleButton searchButton">&#10148; Cancel</span></a>
+            </p>
         </form>
     </section>
     <!-- movie display section -->
-    <section id="movie-wrapper" class="flex-row">
+    <section id="movie-wrapper" class="flex-row margin-top">
     </section>
     <script src="wnumb-1.0.2/wNumb.js"></script>
     <script src="slider/nouislider.min.js"></script>
