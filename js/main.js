@@ -165,8 +165,11 @@ Data is sent from here to...*/
 
 
 var store = (function() {
-    //This is the array where the movies are stored.
+    //This is the array where all the movies are stored.
     var movieDatabase = [];
+    //This is the array of our current selection
+    var currentSelection = [];
+
     return {
         addMovie: function(obj) {
             movieDatabase.push(obj);
@@ -180,14 +183,14 @@ var store = (function() {
             let rating = parseInt(document.getElementById("selectId-" + id).value);
             movieDatabase[id].rating.push(rating);
             movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
-            return this.refreshMovies(this.getAllMovies());
+            return this.refreshMovies(this.getCurrentSelection());
 
         },
         editGenre: function(button) {
             let id = parseInt(button.id.split("-")[1]);
             let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
             movieDatabase[id].genre = addGenre;
-            return this.refreshMovies(this.getAllMovies());
+            return this.refreshMovies(this.getCurrentSelection());
 
         },
         getAllMovies: function() {
@@ -212,9 +215,16 @@ var store = (function() {
             return lowRatedArr;
 
         },
+
         refreshMovies: function(movies) {
-            console.log(movies);
             return print.printMovies(movies);
+        },
+        //stores and gets current selection to prevent all movies from showing up when we add a grade or genre.
+        storeCurrentSelection: function(arr) {
+            this.currentSelection = arr;
+        },
+        getCurrentSelection: function() {
+            return this.currentSelection;
         }
     };
 })();
@@ -228,9 +238,6 @@ var print = (function() {
         return grade > 5 ? "goodgrade" : "badgrade";
     }
 
-    function storeLatestRender(moviesToPrint) {
-        var latest = moviesToPrint;
-    }
 
     function printGenres(arr) {
         let genreCode = "";
@@ -258,10 +265,8 @@ var print = (function() {
     }
 
     function toggleGenreBox(button) {
-        console.log(event.target.id);
         let id = event.target.id.split("-")[1];
         let box = document.getElementById("edit-genre-box-" + id);
-        console.log(box);
         box.classList.toggle("visible");
         box.classList.toggle("hidden");
     }
@@ -332,10 +337,10 @@ var print = (function() {
                 `;
                 }
             }
-            storeLatestRender(moviesToPrint);
+            //sends the current selection to storage so we can display it again
+            store.storeCurrentSelection(moviesToPrint);
         },
         toggleBox: function(el) {
-            console.log(el);
             let id = "add-movie-section";
             if (el == "toggleButton searchButton") {
                 id = "search-movie-section";
@@ -344,7 +349,6 @@ var print = (function() {
             box.classList.toggle("visible");
             box.classList.toggle("hidden");
         },
-        getLastRender: storeLatestRender,
         toggleGenreBox: toggleGenreBox
     };
 })();
