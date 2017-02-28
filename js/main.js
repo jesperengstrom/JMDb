@@ -1,6 +1,10 @@
 //event handlers
 window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
-document.getElementById("add-submit").addEventListener("click", () => makeNew.makeMovie());
+document.getElementById("add-submit").addEventListener("click", () => {
+    let title = document.getElementById("add-title").value;
+    title.length === 0 ? alert("Please provide a title for your movie!") : makeNew.makeMovie();
+});
+
 document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
 document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
@@ -22,7 +26,7 @@ to every object passing through the constructor. The movies are then passed on t
 var makeNew = (function() {
     var idCounter = -1;
 
-    function Movie(title, rating, year, genre, cover = "images/nocover.jpg", director = "N/A", starring = "N/A") {
+    function Movie(title, rating, year, genre, cover, director, starring) {
         this.title = title;
         this.rating = [rating];
         this.year = year;
@@ -59,13 +63,6 @@ var makeNew = (function() {
         store.refreshMovies(store.getAllMovies());
         print.toggleBox();
         document.getElementById("add-movie-form").reset();
-        /*if (title.length !== 0) newMovie.title = title;
-        if (rating.length !== 0) newMovie.rating = [rating];
-        if (year.length !== 0) newMovie.year = year;
-        if (genre.length !== 0) newMovie.genre = genre;
-        if (cover.length !== 0) newMovie.cover = cover;
-        if (director.length !== 0) newMovie.director = director;
-        if (starring.length !== 0) newMovie.starring = newMovie.makeArray(starring);*/
     }
 
     return {
@@ -135,7 +132,7 @@ var search = (function() {
     function filterArray(find, all, prop) {
         return all.filter(function(val) {
             let add = false;
-            for (var i in this[prop]) {
+            for (let i in this[prop]) {
                 //console.log("looking for " + this.starring[i] + " and currently looking at " + val.starring);
                 if (val[prop].indexOf(this[prop][i]) > -1) {
                     add = true;
@@ -360,6 +357,7 @@ var print = (function() {
 //using noUISlider library - https://refreshless.com/nouislider/
 //with wNumb number formatting library - https://refreshless.com/wnumb/
 //These libraries use the factory pattern, so I make two of my own sliders using Object.create() and some customizing.
+
 
 var yearSlider = document.getElementById("slider-year");
 var ratingSlider = document.getElementById("slider-rating");
