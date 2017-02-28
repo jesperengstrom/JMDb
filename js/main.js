@@ -16,10 +16,8 @@ Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     });
 });
 
-/*I basically have a number modules that handle all functionality, for grouping and privacy puropses: 
-as much as possible of their variables and functions are private, they have a public API with functions necessary to communicate with each other.
 
-Module #1 - to make new movies. Revealing module pattern. The add form input is made into an object using a constructor. 
+/*Module #1 - to make new movies. The add form input is made into an object using a constructor. 
 To have the constructor inside a closure is also handy because local var idCounter can be stored and provide a unique id 
 to every object passing through the constructor. The movies are then passed on to the storage. */
 
@@ -71,92 +69,8 @@ var makeNew = (function() {
     };
 })();
 
-//SEARCH
 
-var search = (function() {
-    //Kinda unnecessary to make a new prototype for the searches and make Movie it's prototype. I did this to 
-    //give acess to Movie's makeArray function. Could have just made it a public function but this more fun :)
-    function Search() {}
-    Search.prototype = new makeNew.Movie();
-
-    function makeSearchObject() {
-        var searchObj = new Search();
-
-        let searchTitle = document.getElementById("search-title").value;
-        if (searchTitle.length !== 0) searchObj.title = searchTitle;
-
-        searchObj.rating = ratingSlider.noUiSlider.get();
-        searchObj.year = yearSlider.noUiSlider.get();
-
-        let filterGenre = Array.from(document.querySelectorAll(".filter-genre:checked")).map((val) => { return val.value; });
-        if (filterGenre.length !== 0) searchObj.genre = filterGenre;
-
-        let searchDirector = document.getElementById("search-director").value;
-        if (searchDirector.length !== 0) searchObj.director = searchDirector;
-
-        let searchStarring = document.getElementById("search-starring").value;
-        if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
-
-        performSearch(searchObj, store.getAllMovies());
-    }
-
-    //filter all movies by (in this order:) year interval, ratings interval, genres, director and title
-
-    function performSearch(find, all) {
-
-        var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
-            .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
-
-        if (find.hasOwnProperty("genre")) {
-            searchResult = filterArray(find, searchResult, "genre");
-        }
-
-        if (find.hasOwnProperty("starring")) {
-            searchResult = filterArray(find, searchResult, "starring");
-        }
-
-        if (find.hasOwnProperty("director")) {
-            searchResult = searchString(find, searchResult, "director");
-        }
-
-        if (find.hasOwnProperty("title")) {
-            searchResult = searchString(find, searchResult, "title");
-        }
-
-        store.refreshMovies(searchResult);
-    }
-
-    /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
-    (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
-    so I ended up with an indexOf-method in an if-statement inside a loop inside a filter method :) */
-    function filterArray(find, all, prop) {
-        return all.filter(function(val) {
-            let add = false;
-            for (let i in this[prop]) {
-                //console.log("looking for " + this.starring[i] + " and currently looking at " + val.starring);
-                if (val[prop].indexOf(this[prop][i]) > -1) {
-                    add = true;
-                }
-            }
-            return add;
-        }, find);
-    }
-
-    function searchString(find, all, prop) {
-        return all.filter(function(val, i) {
-            return all[i][prop].toLowerCase() == find[prop].toLowerCase();
-        });
-    }
-
-    return {
-        makeSearchObject: makeSearchObject,
-    };
-})();
-
-
-
-/*DATABASE. Module pattern. 
-My existing movies are tucked away in storage here with no risk of manipulation once created.
+/*module #2 - Database. My existing movies are tucked away in storage here with no risk of manipulation once created.
 The module is providing public endpoints to add a movie, get all movies, get some movies (filtered) and refreshing the list. 
 Data is sent from here to...*/
 
@@ -226,8 +140,89 @@ var store = (function() {
     };
 })();
 
-//3. PRINT-TO-SCREEN. Module pattern.
-//Where all the object from storage are rendered. Only printing + display functions need to be public, other ones are internal
+
+/*Module #3 - Search. This ectrats the data from the search form making it a search object. It then sends the object to the performSearch
+function that compares it to the movie databases' movie prop/values using some helper methods. It returns a search result array that is 
+stored and sent to the print module.*/
+
+var search = (function() {
+    //Kinda unnecessary to make a new prototype for the searches and make Movie it's prototype. I did this to 
+    //give acess to Movie's makeArray function. Could have just made it a public function but this more fun :)
+    function Search() {}
+    Search.prototype = new makeNew.Movie();
+
+    function makeSearchObject() {
+        var searchObj = new Search();
+
+        let searchTitle = document.getElementById("search-title").value;
+        if (searchTitle.length !== 0) searchObj.title = searchTitle;
+
+        searchObj.rating = ratingSlider.noUiSlider.get();
+        searchObj.year = yearSlider.noUiSlider.get();
+
+        let filterGenre = Array.from(document.querySelectorAll(".filter-genre:checked")).map((val) => { return val.value; });
+        if (filterGenre.length !== 0) searchObj.genre = filterGenre;
+
+        let searchDirector = document.getElementById("search-director").value;
+        if (searchDirector.length !== 0) searchObj.director = searchDirector;
+
+        let searchStarring = document.getElementById("search-starring").value;
+        if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
+
+        performSearch(searchObj, store.getAllMovies());
+    }
+
+    //filter all movies by search object in this order: year interval, ratings interval, genres, director and title.
+    function performSearch(find, all) {
+
+        var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
+            .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
+
+        if (find.hasOwnProperty("genre")) {
+            searchResult = filterArray(find, searchResult, "genre");
+        }
+        if (find.hasOwnProperty("starring")) {
+            searchResult = filterArray(find, searchResult, "starring");
+        }
+        if (find.hasOwnProperty("director")) {
+            searchResult = searchString(find, searchResult, "director");
+        }
+        if (find.hasOwnProperty("title")) {
+            searchResult = searchString(find, searchResult, "title");
+        }
+
+        store.refreshMovies(searchResult);
+    }
+
+    /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
+    (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
+    so I ended up with an indexOf-method in an if-statement inside a loop inside a filter method :) */
+    function filterArray(find, all, prop) {
+        return all.filter(function(val) {
+            let add = false;
+            for (let i in this[prop]) {
+                if (val[prop].indexOf(this[prop][i]) > -1) {
+                    add = true;
+                }
+            }
+            return add;
+        }, find);
+    }
+
+    function searchString(find, all, prop) {
+        return all.filter(function(val, i) {
+            return all[i][prop].toLowerCase() == find[prop].toLowerCase();
+        });
+    }
+
+    return {
+        makeSearchObject: makeSearchObject,
+    };
+})();
+
+/*Module #4 - print-to-screen. The main (public) function printMovies takes an array and prints each item to screen.
+It also has some private helper methods. This module also contains other screen-related functions such as search and 
+add box toggle for example. */
 
 var print = (function() {
 
@@ -284,12 +279,10 @@ var print = (function() {
                 wrapper.innerHTML = `<p id="no-result">Sorry, no result</p>`;
             } else {
 
-                /* The movies are pushed into the array so that their id:s are the same as their index. 
-                 I still want the latest movie displayed first though, that's why the array is printed out in reverse.*/
+                /* I want the latest movies to be displayed first. But in creation the movies are pushed into the array 
+                so that their id:s are the same as their index. That's why the array is printed out in reverse.*/
                 for (let i = moviesToPrint.length - 1; i >= 0; i--) {
                     let movie = moviesToPrint[i];
-
-                    //let filteredRating = movie.rating.filter((val) => val !== undefined); //kanske kan tas bort senare
 
                     wrapper.innerHTML += `
                 <div class="moviebox">
