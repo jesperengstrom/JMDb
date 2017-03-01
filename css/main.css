@@ -64,6 +64,7 @@ hr {
 .flex-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .margin-right {
@@ -78,9 +79,15 @@ hr {
     margin-bottom: 1rem;
 }
 
+.nav-row {
+    min-width: 100%;
+    max-width: 100%;
+    text-align: center;
+}
+
 #add-movie-section,
 #search-movie-section {
-    width: 40%;
+    width: 50%;
     border: 1px solid black;
     padding: 1rem;
     margin: 1rem;
@@ -184,4 +191,29 @@ hr {
 
 .nobreak {
     white-space: nowrap;
+}
+
+@media screen and (max-width: 1150px) {
+    #movie-wrapper {
+        max-width: 95%;
+        justify-content: center;
+    }
+    #add-movie-section {
+        width: 80%
+    }
+    #search-movie-section {
+        width: 80%
+    }
+    .flex-row {
+        flex-wrap: wrap;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    .moviebox {
+        max-width: 40%;
+    }
+    .nav-row {
+        max-width: 80%;
+    }
 }

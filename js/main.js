@@ -1,21 +1,23 @@
 //Event handlers that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
-
-window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
-document.getElementById("add-submit").addEventListener("click", () => {
-    let title = document.getElementById("add-title").value;
-    title.length === 0 ? alert("Please provide a title for your movie!") : makeNew.makeMovie();
-});
-
-document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
-document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
-document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
-document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
-
-Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
-    el.addEventListener("click", () => {
-        print.toggleBox(event.target.className);
+(function() {
+    window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
+    document.getElementById("add-submit").addEventListener("click", () => {
+        let title = document.getElementById("add-title").value;
+        title.length === 0 ? alert("Please provide a title for your movie!") : makeNew.makeMovie();
     });
-});
+
+    document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
+    document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
+    document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
+    document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
+
+    Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
+        el.addEventListener("click", () => {
+            print.toggleBox(event.target.className);
+        });
+    });
+
+})();
 
 /*Module #1 - make new movies. The add form input is collected and made into an object using a constructor and some helper methods which are set to 
 the constructor prototype. To have the constructor inside a closure is also handy because local var idCounter can be stored outside and provide 
@@ -241,7 +243,7 @@ var print = (function() {
 
     //this very unpure and kinda tedious function renders the edit-genres-box for each movie. It's current genres has to be checked,  
     //hence all the looping.
-    function editGenre(movie) {
+    function printEditGenreBox(movie) {
         let curGenre = movie.genre;
         let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
         genreBoxes = "";
@@ -319,7 +321,7 @@ var print = (function() {
                 <option value="10">10</option>
                 </select></div>
 
-                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${editGenre(movie)}
+                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${printEditGenreBox(movie)}
                 <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
                 </a>
                 </div>          
