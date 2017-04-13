@@ -3,6 +3,14 @@
       flex: 0 0 0% !important;
   margin: 1rem; }
 
+.card-block {
+  padding-bottom: 0.5rem; }
+
+.card-footer,
+.modal-header,
+.modal-footer {
+  background: rgba(100, 149, 237, 0.1); }
+
 nav .navbar {
   min-width: 100% !important; }
 
@@ -14,6 +22,9 @@ input,
 textarea,
 select {
   font-family: 'Merriweather', serif !important; }
+
+.form-check-input {
+  margin-right: 0.2rem; }
 
 #logo {
   max-width: 80px;
@@ -39,6 +50,18 @@ h3 {
 p {
   margin: 0.5rem 0rem;
   line-height: 1.5rem; }
+
+.inline-link {
+  color: darkred;
+  margin: 0.5rem 0rem;
+  white-space: nowrap;
+  overflow: visible; }
+
+.inline-link,
+.genre-box {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-variant: small-caps; }
 
 .margin-right {
   margin-right: 2rem; }
@@ -94,6 +117,8 @@ a {
   cursor: pointer; }
   a:hover {
     text-decoration: underline !important; }
+  a:focus {
+    outline-color: transparent !important; }
 
 label {
   padding: 0.25rem; }
@@ -125,9 +150,7 @@ hr {
   width: 50%;
   border: 1px solid black;
   padding: 1rem;
-  margin: 1rem;
-  transition: all 1s ease;
-  transform: translateY(-200%); }
+  margin: 1rem; }
 
 .tone-down {
   color: lightslategrey; }
@@ -152,23 +175,11 @@ hr {
   animation: show .5s ease-in-out; }
 
 .movie-cover {
-  width: 250px;
-  height: 350px;
+  width: 200px;
+  height: 280px;
   background-image: url("../../images/nocover.jpg");
   background-size: cover;
   border: 1px solid lightgray; }
-
-.inline-link {
-  color: darkred;
-  margin: 0.5rem 0rem;
-  white-space: nowrap;
-  overflow: visible; }
-
-.inline-link,
-.genre-box {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  font-variant: small-caps; }
 
 .genre-box {
   display: inline-block;
@@ -205,21 +216,3 @@ hr {
 
 .nobreak {
   white-space: nowrap; }
-
-@media screen and (max-width: 1150px) {
-  #movie-wrapper {
-    max-width: 95%;
-    -ms-flex-pack: center;
-        justify-content: center; }
-  #add-movie-section {
-    width: 80%; }
-  #search-movie-section {
-    width: 80%; }
-  .flex-row {
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap; } }
-
-@media screen and (max-width: 430px) {
-  #movie-wrapper {
-    -ms-flex-pack: start;
-        justify-content: flex-start; } }

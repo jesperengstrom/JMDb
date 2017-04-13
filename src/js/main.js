@@ -11,11 +11,11 @@
     // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
     // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
-    Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
-        el.addEventListener("click", () => {
-            print.toggleBox(event.target);
-        });
-    });
+    // Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
+    //     el.addEventListener("click", () => {
+    //         print.toggleBox(event.target);
+    //     });
+    // });
 
 })();
 
@@ -61,7 +61,7 @@ var makeNew = (function() {
 
         store.addMovie(newMovie);
         store.refreshMovies(store.getAllMovies());
-        print.toggleBox();
+        // print.toggleBox();
         document.getElementById("add-movie-form").reset();
     }
 
@@ -276,6 +276,7 @@ var print = (function() {
 
     return {
         printMovies: function(movies) {
+            console.log(movies);
             var moviesToPrint = movies;
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
@@ -338,18 +339,20 @@ var print = (function() {
             //sends the current selection to storage so we can display it again.
             store.storeCurrentSelection(moviesToPrint);
         },
-        toggleBox: function(el) {
-            let id = "add-movie-section";
-            if (el.classList.contains("searchButton")) {
-                // id = "search-movie-section";
-                let search = document.querySelector("#search-movie-section");
-                search.style.transform = "translateY(0%)";
-            }
-            let box = document.getElementById(id);
-            // box.classList.toggle("active");
-            // box.classList.toggle("visible");
-            // box.classList.toggle("hidden");
-        },
+        // toggleBox: function(el) {
+        //     let id = "add-movie-section";
+        //     if (el.classList.contains("searchButton")) {
+        //         $('#searchModal').modal('toggle');
+        //         // id = "search-movie-section";
+        //     }
+        //     if (el.classList.contains("addButton")) {
+        //         $('#addModal').modal('toggle');
+        //     }
+        //     let box = document.getElementById(id);
+        //     // box.classList.toggle("active");
+        //     // box.classList.toggle("visible");
+        //     // box.classList.toggle("hidden");
+        // },
         toggleGenreBox: toggleGenreBox
     };
 })();

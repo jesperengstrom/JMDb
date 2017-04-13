@@ -1,0 +1,169 @@
+[{
+        "title": "Silence Of The Lambs",
+        "rating": [
+            7
+        ],
+        "year": 1991,
+        "director": "Jonathan Demme",
+        "starring": [
+            "Jodie Foster",
+            "Anthony Hopkins"
+        ],
+        "genre": [
+            "Horror",
+            "Thriller"
+        ],
+        "cover": "https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg",
+        "id": 0,
+        "averageRating": 7
+    },
+    {
+        "title": "Jurassic Park",
+        "rating": [
+            6
+        ],
+        "year": 1993,
+        "director": "Steven Spielberg",
+        "starring": [
+            "Sam Neill",
+            "Laura Dern"
+        ],
+        "genre": [
+            "Action",
+            "Thriller",
+            "Sci-fi"
+        ],
+        "cover": "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg",
+        "id": 1,
+        "averageRating": 6
+    },
+    {
+        "title": "Annie Hall",
+        "rating": [
+            8
+        ],
+        "year": 1977,
+        "director": "Woody Allen",
+        "starring": [
+            "Woody Allen",
+            "Diane Keaton"
+        ],
+        "genre": [
+            "Comedy"
+        ],
+        "cover": "https://web.calstatela.edu/library/mmc/100/annie_hall.jpg",
+        "id": 2,
+        "averageRating": 8
+    },
+    {
+        "title": "Reine och Mimmi i Fjällen",
+        "rating": [
+            1
+        ],
+        "year": 1997,
+        "director": "Magnus Skogsberg",
+        "starring": [
+            "Bertram Heribertson",
+            "Ing-Marie Carlsson"
+        ],
+        "genre": [
+            "Comedy"
+        ],
+        "cover": "http://s0.discshop.se/img/front_large/33020/reine_mimmi_i_fjallen.jpg",
+        "id": 3,
+        "averageRating": 1
+    },
+    {
+        "title": "Brazil",
+        "rating": [
+            9
+        ],
+        "year": 1985,
+        "director": "Terry Gilliam",
+        "starring": [
+            "Jonathan Pryce",
+            "Robert De Niro"
+        ],
+        "genre": [
+            "Drama",
+            "Sci-fi"
+        ],
+        "cover": "http://media.moddb.com/images/groups/1/9/8215/Brazil-1985-movie-wallpaper-1024x1451.jpg",
+        "id": 4,
+        "averageRating": 9
+    },
+    {
+        "title": "Anchorman: The Legend of Ron Burgundy",
+        "rating": [
+            8
+        ],
+        "year": 2004,
+        "director": "Adam McKay",
+        "starring": [
+            "Will Ferrell",
+            "Christina Applegate"
+        ],
+        "genre": [
+            "Comedy"
+        ],
+        "cover": "https://upload.wikimedia.org/wikipedia/en/6/64/Movie_poster_Anchorman_The_Legend_of_Ron_Burgundy.jpg",
+        "id": 5,
+        "averageRating": 8
+    },
+    {
+        "title": "2001: A Space Odyssey",
+        "rating": [
+            10
+        ],
+        "year": 1968,
+        "director": "Stanley Kubrick",
+        "starring": [
+            "Keir Dullea",
+            "Gary Lockwood"
+        ],
+        "genre": [
+            "Sci-fi"
+        ],
+        "cover": "http://www.impawards.com/1968/posters/two_thousand_and_one_a_space_odyssey_ver2.jpg",
+        "id": 6,
+        "averageRating": 10
+    },
+    {
+        "title": "Magnolia",
+        "rating": [
+            3
+        ],
+        "year": 1999,
+        "director": "Paul Thomas Anderson",
+        "starring": [
+            "Tom Cruise",
+            "Jeremy Blackman"
+        ],
+        "genre": [
+            "Drama"
+        ],
+        "cover": "https://upload.wikimedia.org/wikipedia/en/4/4b/Magnolia_poster.png",
+        "id": 7,
+        "averageRating": 3
+    },
+    {
+        "title": "Love Actually",
+        "rating": [
+            4
+        ],
+        "year": 2003,
+        "director": "Richard Curtis",
+        "starring": [
+            "Hugh Grant",
+            "Liam Neeson"
+        ],
+        "genre": [
+            "Comedy",
+            "Romantic",
+            "Drama"
+        ],
+        "cover": "https://upload.wikimedia.org/wikipedia/en/e/eb/Love_Actually_movie.jpg",
+        "id": 8,
+        "averageRating": 4
+    }
+]

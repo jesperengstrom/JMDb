@@ -21,11 +21,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
     // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
-    Array.from(document.getElementsByClassName("toggleButton")).forEach(function (el) {
-        el.addEventListener("click", function () {
-            print.toggleBox(event.target);
-        });
-    });
+    // Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
+    //     el.addEventListener("click", () => {
+    //         print.toggleBox(event.target);
+    //     });
+    // });
 })();
 
 /*Module #1 - make new movies. The add form input is collected and made into an object using a constructor and some helper methods which are set to 
@@ -74,7 +74,7 @@ var makeNew = function () {
 
         store.addMovie(newMovie);
         store.refreshMovies(store.getAllMovies());
-        print.toggleBox();
+        // print.toggleBox();
         document.getElementById("add-movie-form").reset();
     }
 
@@ -335,6 +335,7 @@ var print = function () {
 
     return {
         printMovies: function printMovies(movies) {
+            console.log(movies);
             var moviesToPrint = movies;
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
@@ -353,18 +354,20 @@ var print = function () {
             //sends the current selection to storage so we can display it again.
             store.storeCurrentSelection(moviesToPrint);
         },
-        toggleBox: function toggleBox(el) {
-            var id = "add-movie-section";
-            if (el.classList.contains("searchButton")) {
-                // id = "search-movie-section";
-                var _search = document.querySelector("#search-movie-section");
-                _search.style.transform = "translateY(0%)";
-            }
-            var box = document.getElementById(id);
-            // box.classList.toggle("active");
-            // box.classList.toggle("visible");
-            // box.classList.toggle("hidden");
-        },
+        // toggleBox: function(el) {
+        //     let id = "add-movie-section";
+        //     if (el.classList.contains("searchButton")) {
+        //         $('#searchModal').modal('toggle');
+        //         // id = "search-movie-section";
+        //     }
+        //     if (el.classList.contains("addButton")) {
+        //         $('#addModal').modal('toggle');
+        //     }
+        //     let box = document.getElementById(id);
+        //     // box.classList.toggle("active");
+        //     // box.classList.toggle("visible");
+        //     // box.classList.toggle("hidden");
+        // },
         toggleGenreBox: toggleGenreBox
     };
 }();

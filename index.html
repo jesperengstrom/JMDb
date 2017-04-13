@@ -26,10 +26,10 @@
                     <a class="nav-link" id="show-all-movies" href="#">Show all movies <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton searchButton nav-link" href="#">Advanced Search</a>
+                    <a class="toggleButton searchButton nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton addButton nav-link" href="#">Add A Movie</a>
+                    <a class="toggleButton addButton nav-link" data-toggle="modal" data-target="#addModal" href="#">Add A Movie</a>
                 </li>
             </ul>
             <!--<a class="nav-item nav-link" id="get-best-rated" href="#">Highest rated movie</a>
@@ -41,28 +41,183 @@
         </div>
     </nav>
     <!--end nav-->
+    <!--modal add movie -->
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title title">Add a Movie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form id="add-movie-form">
+                            <div class="form-group row">
+                                <label for="add-title" class="col-md-2 col-form-label">Title:</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" id="add-title" name="add-title" type="text" placeholder="Add a movie title" required maxlength="30">
+                                </div>
+                                <label for="add-director" class="col-md-2 col-form-label">Director:</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" id="add-director" name="add-director" type="text" placeholder="Who directed it?" required maxlength="30">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="add-year" class="col-md-2 col-form-label">Year of premiere:</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" id="add-year" name="add-year" type="number" min="1920" max="2020" step="1" value="2017">
+                                </div>
+                                <label for="add-starring" class="col-md-2 col-form-label">Lead Actors:</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" id="add-starring" name="add-starring" type="text" placeholder="Separated by comma" maxlength="60">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="add-genre" class="col-md-2 col-form-label">Genres:</label>
+                                <div class="col-md-10">
+                                    <div class="col-sm-12">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Drama">Drama
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Romantic">Romantic
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Comedy">Comedy
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Thriller">Thriller
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Action">Action
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Horror">Horror
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre form-check-input">
+                                                <input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Science Fiction
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Documentary">Documentary
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Animated">Animated
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                                <input type="checkbox" class="add-genre form-check-input" name="add-genre" value="Kids">Kids
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="add-cover" class="col-md-2 col-form-label">Cover:</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" id="add-cover" name="add-cover" type="url" placeholder="URL (min 250px x 350px)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="add-rating" class="col-md-2 col-form-label">Rate it!</label>
+                                <div class="col-md-10">
+                                    <select class="custom-select" id="add-rating" name="add-rating">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5" selected="selected">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a data-dismiss="modal" id="add-submit">&#10148; Submit</a>
+                                <a data-dismiss="modal">&#10148; Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end modal add movie-->
+    <!--modal search movie -->
+    <div class="modal fade" id="searchModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title title">Search for a Movie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Search!</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end modal search movie movie-->
     <!-- add movie form -->
-    <section id="add-movie-section" class="hidden flex-column">
+    <!--<section id="add-movie-section" class="flex-column">
         <header>
             <h3>Add a new movie</h3>
         </header>
         <form id="add-movie-form" class="flex-column margin-top search-row">
             <div class="flex-row">
-                <div class="flex-column margin-right">
-                    <div class="flex-row">
+                <div class="flex-column margin-right">-->
+    <!--<div class="flex-row">
                         <p>
                             <label for="add-title">Title:</label>
                             <input type="text" id="add-title" name="add-title" placeholder="Add a movie title" required maxlength="30" />
                         </p>
-                    </div>
-                    <div class="flex-row">
+                    </div>-->
+    <!--<div class="flex-row">
                         <p>
                             <label for="add-director">Director:</label>
                             <input type="text" id="add-director" name="add-director" placeholder="Who directed it?" maxlength="30" />
                         </p>
-                    </div>
-                </div>
-                <div class="flex-column">
+                    </div>-->
+    <!--</div>-->
+    <!--<div class="flex-column">
                     <div class="flex-row">
                         <p>
                             <label for="add-year">Year of premiere:</label>
@@ -75,49 +230,49 @@
                             <input type="text" id="add-starring" name="add-starring" placeholder="Separated by comma" maxlength="60" />
                         </p>
                     </div>
-                </div>
-            </div>
-            <div class="flex-row margin-top">
-                <p>
-                    <label for="add-genre">Genre:</label>
-                </p>
+                </div>-->
+    <!--</div>-->
+    <!--<div class="flex-row margin-top">
+                    <p>
+                        <label for="add-genre">Genre:</label>
+                    </p>
 
-                <div class="genre flex-row">
-                    <p>
-                        <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama</div>
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic</div>
-                        </div>
-                        <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Comedy">Comedy</div>
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Thriller">Thriller</div>
-                        </div>
-                        <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Action">Action</div>
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror</div>
-                        </div>
-                        <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Science Fiction</div>
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary</div>
-                        </div>
-                        <div class="flex-column">
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Animated">Animated</div>
-                            <div><input type="checkbox" class="add-genre" name="add-genre" value="Kids">Kids</div>
-                        </div>
-                    </p>
-                </div>
-            </div>
-            <div class="flex-row margin-top">
-                <div class="flex-row margin-right">
-                    <p>
-                        <label for="add-cover">Cover:</label>
-                        <input type="url" id="add-cover" name="add-cover" placeholder="URL (min 250px x 350px)" />
-                    </p>
-                </div>
-                <div class="flex-row margin-right">
-                    <p>
-                        <label for="add-rating">Rate it!</label>
-                        <select id="add-rating" name="add-rating">
+                    <div class="genre flex-row">
+                        <p>
+                            <div class="flex-column">
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Drama">Drama</div>
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Romantic">Romantic</div>
+                            </div>
+                            <div class="flex-column">
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Comedy">Comedy</div>
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Thriller">Thriller</div>
+                            </div>
+                            <div class="flex-column">
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Action">Action</div>
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Horror">Horror</div>
+                            </div>
+                            <div class="flex-column">
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Sci-fi">Science Fiction</div>
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Documentary">Documentary</div>
+                            </div>
+                            <div class="flex-column">
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Animated">Animated</div>
+                                <div><input type="checkbox" class="add-genre" name="add-genre" value="Kids">Kids</div>
+                            </div>
+                        </p>
+                    </div>
+                </div>-->
+    <!--<div class="flex-row margin-top">
+                        <div class="flex-row margin-right">
+                            <p>
+                                <label for="add-cover">Cover:</label>
+                                <input type="url" id="add-cover" name="add-cover" placeholder="URL (min 250px x 350px)" />
+                            </p>
+                        </div>-->
+    <!--<div class="flex-row margin-right">
+                            <p>
+                                <label for="add-rating">Rate it!</label>
+                                <select id="add-rating" name="add-rating">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -132,21 +287,21 @@
                 <option value="10">10</option>
             </select>
 
-                    </p>
-                </div>
-                <div class="flex-row">
-                    <p>
-                        <a class="inline-link" id="add-submit">&#10148; Submit</a>
-                        <a class="inline-link toggleButton addButton">&#10148; Cancel</a>
-                    </p>
-                </div>
-            </div>
+                            </p>
+                        </div>-->
+    <!--<div class="flex-row">
+                        <p>
+                            <a class="inline-link" id="add-submit">&#10148; Submit</a>
+                            <a class="inline-link toggleButton addButton">&#10148; Cancel</a>
+                        </p>
+                    </div>-->
+    <!--</div>
 
         </form>
-    </section>
+    </section>-->
     <!--end add movie-->
     <!-- advanced search form -->
-    <section id="search-movie-section" class="flex-column">
+    <section id="search-movie-section" class="flex-column hidden">
         <header>
             <h3>Search the JMDb</h3>
         </header>

@@ -28,3 +28,17 @@ p {
     margin: 0.5rem 0rem;
     line-height: 1.5rem;
 }
+
+.inline-link {
+    color: darkred;
+    margin: 0.5rem 0rem;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.inline-link,
+.genre-box {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-variant: small-caps;
+}
