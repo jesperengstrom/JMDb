@@ -1,7 +1,12 @@
+@import "bs-tweaks";
+@import "type";
+@import "padding-margin";
+@import "display";
 html,
 body {
     margin: 0;
-    padding: 0
+    padding: 0;
+    font-size: 14px;
 }
 
 body {
@@ -17,36 +22,13 @@ header {
     padding: 0.5rem;
 }
 
-h1 {
-    font-size: 4rem;
-    margin: 1rem;
-    background: #f5de50;
-    border: 10px solid #f5de50;
-    border-radius: 10%;
-}
-
-h2 {
-    margin-top: 0.5rem;
-}
-
-h3 {
-    text-align: center;
-    margin: 0.5rem;
-}
-
-p {
-    margin: 0.5rem 0rem;
-    line-height: 1.5rem;
-}
-
 a {
     text-decoration: none;
     color: dimgrey;
     cursor: pointer;
-}
-
-a:hover {
-    text-decoration: underline;
+    &:hover {
+        text-decoration: underline !important;
+    }
 }
 
 label {
@@ -68,18 +50,6 @@ hr {
     flex-wrap: wrap;
 }
 
-.margin-right {
-    margin-right: 2rem;
-}
-
-.margin-top {
-    margin-top: 1rem;
-}
-
-.margin-bottom {
-    margin-bottom: 1rem;
-}
-
 .nav-row {
     min-width: 100%;
     max-width: 100%;
@@ -92,6 +62,9 @@ hr {
     border: 1px solid black;
     padding: 1rem;
     margin: 1rem;
+    transition: all 1s ease;
+    ;
+    transform: translateY(-200%);
 }
 
 .tone-down {
@@ -113,23 +86,24 @@ hr {
 }
 
 #movie-wrapper {
-    max-width: 75%;
-    min-width: 75%;
+    // max-width: 75%;
+    // min-width: 75%;
     flex-wrap: wrap;
     transition: all 0.3s ease;
 }
 
 .moviebox {
-    margin: 2rem;
-    min-width: 25%;
-    max-width: 25%;
+    // padding: 1rem;
+    // margin: 2rem;
+    // min-width: 25%;
+    // max-width: 25%;
     animation: show .5s ease-in-out;
 }
 
 .movie-cover {
     width: 250px;
     height: 350px;
-    background-image: url("../images/nocover.jpg");
+    background-image: url("../../images/nocover.jpg");
     background-size: cover;
     border: 1px solid lightgray;
 }
@@ -160,33 +134,6 @@ hr {
 .sliderbox {
     margin: 2rem 0;
     padding: 2rem 1rem;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/*.visible {
-    display: flex !important;
-}*/
-
-.visible {
-    animation: show .3s ease-in-out;
-}
-
-@keyframes show {
-    0% {
-        display: none;
-        opacity: 0;
-    }
-    1% {
-        display: flex;
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
 }
 
 .search-row {
@@ -228,15 +175,6 @@ hr {
     }
     .flex-row {
         flex-wrap: wrap;
-    }
-}
-
-@media screen and (max-width: 950px) {
-    .moviebox {
-        max-width: 40%;
-    }
-    .nav-row {
-        max-width: 80%;
     }
 }
 

@@ -8,12 +8,12 @@
 
     document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
     document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
-    document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
-    document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
+    // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
+    // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
     Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
         el.addEventListener("click", () => {
-            print.toggleBox(event.target.className);
+            print.toggleBox(event.target);
         });
     });
 
@@ -246,7 +246,7 @@ var print = (function() {
     function printEditGenreBox(movie) {
         let curGenre = movie.genre;
         let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
-        genreBoxes = "";
+        let genreBoxes = "";
         for (let all of allGenres) {
             let added = false;
             for (let has of curGenre) {
@@ -289,44 +289,48 @@ var print = (function() {
                     let movie = moviesToPrint[i];
 
                     wrapper.innerHTML += `
-                <div class="moviebox">
+    <div class="card moviebox">
+            <div class="card-block">
                 <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
+            </div>
+            <div class="card-block">
                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
                 <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
-                
+            </div>        
+            <div class="card-footer">
                 <div>
-                ${printGenres(movie.genre)}
+                    ${printGenres(movie.genre)}
                 </div>
+            <div class="nobreak"><p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
+            <span class="credits tone-down"> (${movie.rating.length} votes)</span>
+            </p>
+            </div>
 
-                <div class="nobreak"><p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
-                <span class="credits tone-down"> (${movie.rating.length} votes)</span>
-                </p></div>
-
-                <div>
-                <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a> |
+            <div>
+            <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a> |
                 <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>
                 <select id="selectId-${movie.id}">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5" selected="selected">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                </select></div>
-
-                <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${printEditGenreBox(movie)}
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected="selected">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${printEditGenreBox(movie)}
                 <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
                 </a>
-                </div>          
-
-                </div>
+            </div>
+            </div>          
+            </div>
 
                 `;
                 }
@@ -336,12 +340,15 @@ var print = (function() {
         },
         toggleBox: function(el) {
             let id = "add-movie-section";
-            if (el == "toggleButton searchButton") {
-                id = "search-movie-section";
+            if (el.classList.contains("searchButton")) {
+                // id = "search-movie-section";
+                let search = document.querySelector("#search-movie-section");
+                search.style.transform = "translateY(0%)";
             }
             let box = document.getElementById(id);
-            box.classList.toggle("visible");
-            box.classList.toggle("hidden");
+            // box.classList.toggle("active");
+            // box.classList.toggle("visible");
+            // box.classList.toggle("hidden");
         },
         toggleGenreBox: toggleGenreBox
     };
