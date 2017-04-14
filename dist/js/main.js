@@ -2,25 +2,41 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-//Event handlers that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
+//Event listeners that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
 (function () {
+    //original domready call
+    // window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
+    //new api solution
     window.addEventListener("DOMContentLoaded", function () {
-        return store.refreshMovies(store.getAllMovies());
+        return api.getAllMovies();
     });
+
+    //event listener for add new movie submit button
     document.getElementById("add-submit").addEventListener("click", function () {
         var title = document.getElementById("add-title").value;
         title.length === 0 ? alert("Please provide a title for your movie!") : makeNew.makeMovie();
     });
 
+    //listener for add cancel
+    document.getElementById("add-cancel").addEventListener("click", function () {
+        return makeNew.resetAddForm();
+    });
+
+    //event listener for advanced search submit button
     document.getElementById("search-submit").addEventListener("click", function () {
         return search.makeSearchObject();
     });
+
+    //event listener for "show all movies". Retrieves local array, no new GET-request
     document.getElementById("show-all-movies").addEventListener("click", function () {
         return store.refreshMovies(store.getAllMovies());
     });
+
+    // event listeners for disabled top rated & lowest rated functions
     // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
     // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
+    //event listeners for old add & search windows
     // Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     //     el.addEventListener("click", () => {
     //         print.toggleBox(event.target);
@@ -43,7 +59,7 @@ var makeNew = function () {
         this.starring = starring;
         this.genre = genre;
         this.cover = cover;
-        this.id = idCounter++;
+        //this.id = idCounter++;
         this.averageRating = this.getAverageRating();
     }
 
@@ -58,6 +74,9 @@ var makeNew = function () {
         return string.split(", ");
     };
 
+    /**
+     * Runs when "submit-movie" button is clicked.
+     */
     function makeMovie() {
         var movieTitle = document.getElementById("add-title").value;
         var movieRating = parseInt(document.getElementById("add-rating").value);
@@ -72,15 +91,34 @@ var makeNew = function () {
         var newMovie = new Movie(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring);
         newMovie.starring = newMovie.makeArray(newMovie.starring);
 
-        store.addMovie(newMovie);
-        store.refreshMovies(store.getAllMovies());
+        //used to happen when a new movie was created
+        // store.addMovie(newMovie);
+        // store.refreshMovies(store.getAllMovies());
         // print.toggleBox();
-        document.getElementById("add-movie-form").reset();
+
+        api.postMovie(newMovie);
+        resetAddForm();
+    }
+
+    /**
+     * tedious way to reset the form
+     */
+    function resetAddForm() {
+        var inputs = document.querySelectorAll("#add-movie-form input");
+        inputs.forEach(function (el) {
+            if (el.type == "text" || el.type == "url") el.value = "";
+            if (el.type == "checkbox") el.checked = false;
+            if (el.type == "number") el.value = 2017;
+        });
+        document.querySelectorAll("#add-rating option").forEach(function (el) {
+            if (el.value == "5") el.selected = "selected";
+        });
     }
 
     return {
         makeMovie: makeMovie,
-        Movie: Movie
+        Movie: Movie,
+        resetAddForm: resetAddForm
     };
 }();
 
@@ -117,8 +155,17 @@ var store = function () {
             return print.printMovies(movies);
         },
 
+        //riginal function pushing movies to array REMOVE?
         addMovie: function addMovie(obj) {
             movieDatabase.push(obj);
+        },
+
+        /**
+         * gets an array from the api, stores and sends to print
+         */
+        storeAllMovies: function storeAllMovies(movies) {
+            movieDatabase = movies;
+            store.refreshMovies(movieDatabase);
         },
 
         /* I failed to add event listeners dynamically to ratings/edit genre buttons, so i simply added onclick calls 

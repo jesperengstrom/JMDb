@@ -26,10 +26,10 @@
                     <a class="nav-link" id="show-all-movies" href="#">Show all movies <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton searchButton nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
+                    <a class="toggleButton addButton nav-link" data-toggle="modal" data-target="#addModal" href="#">Add A Movie</a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton addButton nav-link" data-toggle="modal" data-target="#addModal" href="#">Add A Movie</a>
+                    <a class="toggleButton searchButton nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
                 </li>
             </ul>
             <!--<a class="nav-item nav-link" id="get-best-rated" href="#">Highest rated movie</a>
@@ -166,7 +166,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <a data-dismiss="modal" id="add-submit">&#10148; Submit</a>
-                                <a data-dismiss="modal">&#10148; Cancel</a>
+                                <a data-dismiss="modal" id="add-cancel">&#10148; Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -388,11 +388,12 @@
     <!--scripts-->
     <script src="wnumb-1.0.2/wNumb.js"></script>
     <script src="slider/nouislider.min.js"></script>
-    <script src="dist/js/main.js"></script>
-    <script src="dist/js/movies.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="dist/js/api.js"></script>
+    <script src="dist/js/movies.js"></script>
+    <script src="dist/js/main.js"></script>
     <!--end scripts-->
 
 </body>
