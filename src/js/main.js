@@ -362,6 +362,7 @@ var print = (function() {
                 let curGenre = movies[id].genre;
                 let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
                 let genreBoxes = "";
+                document.getElementById("edit-genre-title").innerHTML = `Edit genres for: ${movies[id].title}`;
                 for (let all of allGenres) {
                     let added = false;
                     for (let has of curGenre) {
