@@ -45,6 +45,26 @@ var api = (function() {
                     alert("Oh no, there was an error posting your movie:", error);
                 }
             });
+        },
+
+        patchMovie: function(id, patchObj) {
+            console.log(patchObj);
+            $.ajax({
+                method: "PATCH",
+                url: heroku + "/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(patchObj),
+                success: (response) => {
+                    console.log("successfully patched:", response);
+                    //fetching all movies once again
+                    api.getAllMovies();
+                },
+                error: (error) => {
+                    alert("Oh no, there was an error patching your movie:", error);
+                }
+            });
+
         }
     };
 })();

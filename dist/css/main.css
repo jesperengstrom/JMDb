@@ -26,6 +26,9 @@ select {
 .form-check-input {
   margin-right: 0.2rem; }
 
+.form-check-inline {
+  margin-left: .75rem; }
+
 #logo {
   max-width: 80px;
   font-size: 1.5rem;
@@ -210,9 +213,6 @@ hr {
       flex-direction: row;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap; }
-
-.genre {
-  font-size: 0.75rem; }
 
 .nobreak {
   white-space: nowrap; }

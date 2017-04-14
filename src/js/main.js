@@ -20,6 +20,13 @@
     //event listener for "show all movies". Retrieves local array, no new GET-request
     document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
 
+    //event listener for edit genre modal submit
+    document.getElementById("edit-genre-submit").addEventListener("click", () => {
+        let addGenre = Array.from(document.querySelectorAll("#edit-genre-form input:checked")).map((val) => { return val.value; });
+        let id = event.target.getAttribute("data-id");
+        store.editGenre(addGenre, id);
+    });
+
     // event listeners for disabled top rated & lowest rated functions
     // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
     // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
@@ -83,7 +90,16 @@ var makeNew = (function() {
 
         api.postMovie(newMovie);
         resetAddForm();
+    }
 
+    /**
+     * basically same as getAverageRating - but this is a general function since movies returning from the API are not of the Movie
+     * prototype. Better to keep this one & scrap the other?
+     * @param {array} arr - the ratings array
+     */
+    function avRating(arr) {
+        let rating = parseFloat((arr.reduce((prev, cur) => prev + cur) / arr.length).toFixed(1));
+        return rating;
     }
 
     /**
@@ -104,7 +120,8 @@ var makeNew = (function() {
     return {
         makeMovie: makeMovie,
         Movie: Movie,
-        resetAddForm: resetAddForm
+        resetAddForm: resetAddForm,
+        avRating: avRating
     };
 })();
 
@@ -165,17 +182,41 @@ var store = (function() {
         addRating: function(button) {
             let id = parseInt(button.id.split("-")[1]);
             let rating = parseInt(document.getElementById("selectId-" + id).value);
-            movieDatabase[id].rating.push(rating);
-            movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
-            return this.refreshMovies(this.getCurrentSelection());
-            //Same solution here...
+
+            //old solution - updating rating locally
+            // movieDatabase[id].rating.push(rating);
+            // movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
+            // return this.refreshMovies(this.getCurrentSelection());
+
+            let ratingsArr = movieDatabase[id].rating;
+            ratingsArr.push(rating);
+            let newAverage = makeNew.avRating(movieDatabase[id].rating);
+
+            //making an  object to patch
+            let ratingsPatch = {
+                rating: ratingsArr,
+                averageRating: newAverage
+            };
+
+            api.patchMovie(id, ratingsPatch);
         },
-        editGenre: function(button) {
-            let id = parseInt(button.id.split("-")[1]);
-            let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
-            movieDatabase[id].genre = addGenre;
-            return this.refreshMovies(this.getCurrentSelection());
+        //Same solution here...
+        editGenre: function(newGenres, id) {
+            //console.log(button);
+            //let id = parseInt(button.id.split("-")[1]);
+            //let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
+            //console.log(addGenre);
+
+            //old local solution
+            // movieDatabase[id].genre = addGenre;
+            // return this.refreshMovies(this.getCurrentSelection());
+
+            let genresPatch = {
+                genre: newGenres
+            };
+            api.patchMovie(id, genresPatch);
         },
+
         //stores and gets current selection to prevent all movies from showing up when we add a grade or genre.
         storeCurrentSelection: function(arr) {
             this.currentSelection = arr;
@@ -288,8 +329,11 @@ var print = (function() {
         return genreCode;
     }
 
-    //this very unpure and kinda tedious function renders the edit-genres-box for each movie. It's current genres has to be checked,  
-    //hence all the looping.
+    /**
+     * This very unpure and kinda tedious function renders the edit-genres-box for each movie. It's current genres has to be checked,  
+     * hence all the looping. OLD function for rendering old box. REMOVE?
+     * * @param {object} movie - movie object
+     */
     function printEditGenreBox(movie) {
         let curGenre = movie.genre;
         let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
@@ -307,12 +351,49 @@ var print = (function() {
         return genreBoxes;
     }
 
-    function toggleGenreBox(button) {
-        let id = event.target.id.split("-")[1];
-        let box = document.getElementById("edit-genre-box-" + id);
-        box.classList.toggle("visible");
-        box.classList.toggle("hidden");
+    /**
+     * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres
+     * @param {element} el - DOM-element clicked
+     */
+    function renderGenresModal(movies) {
+        document.querySelectorAll(".edit-genre-button").forEach(function(el) {
+            el.addEventListener("click", function() {
+                let id = el.id.split("-")[1];
+                let curGenre = movies[id].genre;
+                let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
+                let genreBoxes = "";
+                for (let all of allGenres) {
+                    let added = false;
+                    for (let has of curGenre) {
+                        if (all == has) {
+                            genreBoxes += `<div class="form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                            <input type="checkbox" class="edit-genre-${id} form-check-input" value="${all}" checked>${all}
+                                            </label>
+                                            </div>`;
+                            added = true;
+                        }
+                    }
+                    if (!added) genreBoxes += `<div class="form-check-inline">
+                                            <label class="form-check-label add-genre">
+                                            <input type="checkbox" class="edit-genre-${id} form-check-input" value="${all}">${all}
+                                            </label>
+                                            </div>`;
+                }
+                document.getElementById("edit-genre-modal-content").innerHTML = genreBoxes;
+                document.getElementById("edit-genre-submit").setAttribute("data-id", id);
+            });
+        });
     }
+
+
+    //function for toggle old box. REMOVE? (dont forget revealing reference)
+    // function toggleGenreBox() {
+    //     let id = event.target.id.split("-")[1];
+    //     let box = document.getElementById("edit-genre-box-" + id);
+    //     box.classList.toggle("visible");
+    //     box.classList.toggle("hidden");
+    // }
 
     function joinArray(val) {
         if (typeof val === "object") {
@@ -323,7 +404,6 @@ var print = (function() {
 
     return {
         printMovies: function(movies) {
-            console.log(movies);
             var moviesToPrint = movies;
             var wrapper = document.getElementById("movie-wrapper");
             wrapper.innerHTML = "";
@@ -356,7 +436,7 @@ var print = (function() {
             </div>
 
             <div>
-            <a class="inline-link" id="openGenreBox-${movie.id}" onclick="print.toggleGenreBox(this)">&#10148; Edit genre</span></a> |
+            <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> |
                 <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>
                 <select id="selectId-${movie.id}">
                     <option value="1">1</option>
@@ -373,18 +453,15 @@ var print = (function() {
                     <option value="10">10</option>
                 </select>
             </div>
-            <div class="hidden edit-genre-box" id="edit-genre-box-${movie.id}">${printEditGenreBox(movie)}
-                <a id="sumbitNewGenreId-${movie.id}" class="inline-link" onclick="store.editGenre(this)">&#10148; Submit</button>
-                </a>
-            </div>
             </div>          
             </div>
 
                 `;
                 }
             }
-            //sends the current selection to storage so we can display it again.
+            //sends the current selection to storage so we can display it again. DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
             store.storeCurrentSelection(moviesToPrint);
+            renderGenresModal(moviesToPrint);
         },
         // toggleBox: function(el) {
         //     let id = "add-movie-section";
@@ -400,7 +477,7 @@ var print = (function() {
         //     // box.classList.toggle("visible");
         //     // box.classList.toggle("hidden");
         // },
-        toggleGenreBox: toggleGenreBox
+        // toggleGenreBox: toggleGenreBox
     };
 })();
 
