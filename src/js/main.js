@@ -3,7 +3,7 @@
     //original domready call
     // window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
     //new api solution
-    window.addEventListener("DOMContentLoaded", () => api.getAllMovies());
+    window.addEventListener("DOMContentLoaded", () => api.getMovies());
 
     //event listener for add new movie submit button
     document.getElementById("add-submit").addEventListener("click", () => {
@@ -21,7 +21,10 @@
     document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
     //event listener for "show all movies". Retrieves local array, no new GET-request
-    document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
+    // document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
+
+    //event listener for "show all movies". Gets all from API once again
+    document.getElementById("show-all-movies").addEventListener("click", () => api.getMovies());
 
     //event listener for edit genre modal submit
     document.getElementById("edit-genre-submit").addEventListener("click", () => {
@@ -187,7 +190,7 @@ var store = (function() {
         /**
          * gets an array from the api, stores and sends to print
          */
-        storeAllMovies: function(movies) {
+        storeMovies: function(movies) {
             movieDatabase = movies;
             store.refreshMovies(movieDatabase);
 
@@ -273,12 +276,58 @@ var search = (function() {
         let searchDirector = document.getElementById("search-director").value;
         if (searchDirector.length !== 0) searchObj.director = searchDirector;
 
-        let searchStarring = document.getElementById("search-starring").value;
-        if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
+        //old solution, makes array of actors search. When we make a query string that's not necessary
+        // let searchStarring = document.getElementById("search-starring").value;
+        // if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
 
-        performSearch(searchObj, store.getAllMovies());
+        let searchStarring = document.getElementById("search-starring").value;
+        if (searchStarring.length !== 0) searchObj.starring = searchStarring;
+
+        //old - filtered allmovies client side
+        //performSearch(searchObj, store.getAllMovies());
+
+        //now filters with new get request + querystring
+        api.getMovies(makeQueryString(searchObj));
         makeNew.resetSearchForm();
     }
+
+    /**
+     * Function that produces a querystring for the API instead of filtering the movie array client side.
+     * * @param {arr} searchObj - what user is looking for
+     */
+    function makeQueryString(searchObj) {
+        console.log("search object:");
+        console.log(searchObj);
+        let queryString = "?";
+        queryString += searchObj.title ? "title_like=" + qSpace(searchObj.title) : "";
+        queryString += searchObj.director ? "&director_like=" + qSpace(searchObj.director) : "";
+        queryString += searchObj.starring ? "&starring_like=" + qSpace(qComma(searchObj.starring)) : "";
+        if (searchObj.genre) {
+            searchObj.genre.forEach(function(el) {
+                queryString += "&genre_like=" + el;
+            });
+        }
+        queryString += "&year_gte=" + searchObj.year[0] + "&year_lte=" + searchObj.year[1];
+        queryString += "&averageRating_gte=" + searchObj.rating[0] + "&averageRating_lte=" + searchObj.rating[1];
+        return queryString;
+    }
+
+    /**
+     * replaces spaces with +
+     * @param {string} string 
+     */
+    function qSpace(string) {
+        return string.replace(/ /g, "+");
+    }
+
+    /**
+     * replaces spaces with +
+     * @param {string} string 
+     */
+    function qComma(string) {
+        return string.replace(/,/g, "&");
+    }
+
 
     //All the movies are then filtered by the search object in this order: 
     //year interval, ratings interval, genres, director and title.
