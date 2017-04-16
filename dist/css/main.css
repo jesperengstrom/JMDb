@@ -4,7 +4,7 @@
   margin: 1rem; }
 
 .card-block {
-  padding-bottom: 0.5rem; }
+  padding-bottom: 0.75rem; }
 
 .card-block-content {
   padding-top: 0.5rem; }
@@ -26,7 +26,7 @@
   background: white; }
 
 .card-footer-rating {
-  padding-top: 0;
+  padding-top: 0.5rem;
   padding-bottom: 0; }
 
 nav .navbar {
@@ -54,6 +54,12 @@ select {
   background: #f5de50;
   border: 5px solid #f5de50;
   border-radius: 10%; }
+
+#quick-search-btn {
+  color: rgba(0, 0, 0, 0.5);
+  padding-left: 0; }
+  #quick-search-btn:hover {
+    color: rgba(0, 0, 0, 0.7); }
 
 h2 {
   margin-top: 0.5rem; }

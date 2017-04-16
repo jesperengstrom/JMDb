@@ -7,6 +7,14 @@
     border-radius: 10%;
 }
 
+#quick-search-btn {
+    color: rgba(0, 0, 0, .5);
+    &:hover {
+        color: rgba(0, 0, 0, .7);
+    }
+    padding-left: 0;
+}
+
 h2 {
     margin-top: 0.5rem;
 }

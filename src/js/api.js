@@ -17,7 +17,7 @@ var api = (function() {
                 url: thisUrl,
                 success: (fetchedMovies) => {
                     console.log("fetched from: ", thisUrl, fetchedMovies);
-                    store.storeAllMovies(fetchedMovies);
+                    store.storeMovies(fetchedMovies);
                 },
                 error: (error) => {
                     alert("There was a problem with loading the movies: ", error);

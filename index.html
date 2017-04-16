@@ -26,17 +26,19 @@
                     <a class="nav-link" id="show-all-movies" href="#">Show all movies <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton addButton nav-link" data-toggle="modal" data-target="#addModal" href="#">Add A Movie</a>
+                    <a class="nav-link" data-toggle="modal" data-target="#addModal" href="#">Add A Movie</a>
                 </li>
                 <li class="nav-item">
-                    <a class="toggleButton searchButton nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
+                    <a class="nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
                 </li>
             </ul>
             <!--<a class="nav-item nav-link" id="get-best-rated" href="#">Highest rated movie</a>
                 <a class="nav-item nav-link" id="get-lowest-rated" href="#">Lowest rated movie</a>-->
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Quick search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input id="quick-search-text" class="form-control mr-sm-2" type="text" placeholder="Quick search">
+                <div class="nav-item">
+                    <a id="quick-search-btn" class="nav-link mr-2">&#10148; Go!</a>
+                </div>
             </form>
         </div>
     </nav>

@@ -5,39 +5,42 @@
     //new api solution
     window.addEventListener("DOMContentLoaded", () => api.getMovies());
 
+    //old evt "show all movies". Retrieves local array, no new GET-request
+    // document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
+
+    //evt "show all movies". Gets all from API once again
+    document.getElementById("show-all-movies").addEventListener("click", () => api.getMovies());
+
+    //evt quick search
+    document.getElementById("quick-search-btn").addEventListener("click", () => search.quickSearch());
+
     //event listener for add new movie submit button
     document.getElementById("add-submit").addEventListener("click", () => {
         let title = document.getElementById("add-title").value;
         title.length === 0 ? alert("Please provide a title for your movie!") : makeNew.makeMovie();
     });
 
-    //listener for add cancel
+    //evt add cancel
     document.getElementById("add-cancel").addEventListener("click", () => makeNew.resetAddForm());
 
-    //listener for search cancel
+    //evt search cancel
     document.getElementById("search-cancel").addEventListener("click", () => makeNew.resetSearchForm());
 
-    //event listener for advanced search submit button
+    //evt advanced search submit button
     document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
-    //event listener for "show all movies". Retrieves local array, no new GET-request
-    // document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
-
-    //event listener for "show all movies". Gets all from API once again
-    document.getElementById("show-all-movies").addEventListener("click", () => api.getMovies());
-
-    //event listener for edit genre modal submit
+    //evt edit genre modal submit
     document.getElementById("edit-genre-submit").addEventListener("click", () => {
         let addGenre = Array.from(document.querySelectorAll("#edit-genre-form input:checked")).map((val) => { return val.value; });
         let id = event.target.getAttribute("data-id");
         store.editGenre(addGenre, id);
     });
 
-    // event listeners for disabled top rated & lowest rated functions
+    // evts disabled top rated & lowest rated functions
     // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
     // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
 
-    //event listeners for old add & search windows
+    //evts old add & search windows
     // Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
     //     el.addEventListener("click", () => {
     //         print.toggleBox(event.target);
@@ -254,6 +257,14 @@ stored and sent to the print module.*/
 
 var search = (function() {
 
+    function quickSearch() {
+        let input = document.getElementById("quick-search-text");
+        let string = "?q=" + qSpace(input.value);
+        api.getMovies(string);
+        input.value = "";
+
+    }
+
     //Kinda unnecessary to have a new constructor for the searches and make Movie it's prototype. I did this to 
     //give acess to Movie's makeArray function. Could have just made it a public function but this more fun :)
     function Search() {}
@@ -331,50 +342,51 @@ var search = (function() {
 
     //All the movies are then filtered by the search object in this order: 
     //year interval, ratings interval, genres, director and title.
-    function performSearch(find, all) {
+    // function performSearch(find, all) {
 
-        var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
-            .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
+    //     var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
+    //         .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
 
-        if (find.hasOwnProperty("genre")) {
-            searchResult = filterArray(find, searchResult, "genre");
-        }
-        if (find.hasOwnProperty("starring")) {
-            searchResult = filterArray(find, searchResult, "starring");
-        }
-        if (find.hasOwnProperty("director")) {
-            searchResult = searchString(find, searchResult, "director");
-        }
-        if (find.hasOwnProperty("title")) {
-            searchResult = searchString(find, searchResult, "title");
-        }
+    //     if (find.hasOwnProperty("genre")) {
+    //         searchResult = filterArray(find, searchResult, "genre");
+    //     }
+    //     if (find.hasOwnProperty("starring")) {
+    //         searchResult = filterArray(find, searchResult, "starring");
+    //     }
+    //     if (find.hasOwnProperty("director")) {
+    //         searchResult = searchString(find, searchResult, "director");
+    //     }
+    //     if (find.hasOwnProperty("title")) {
+    //         searchResult = searchString(find, searchResult, "title");
+    //     }
 
-        store.refreshMovies(searchResult);
-    }
+    //     store.refreshMovies(searchResult);
+    // }
 
     /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
     (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
     so I ended up with an indexOf-method in an if-statement inside a loop inside a filter method :) */
-    function filterArray(find, all, prop) {
-        return all.filter(function(val) {
-            let add = false;
-            for (let i in this[prop]) {
-                if (val[prop].indexOf(this[prop][i]) > -1) {
-                    add = true;
-                }
-            }
-            return add;
-        }, find);
-    }
+    // function filterArray(find, all, prop) {
+    //     return all.filter(function(val) {
+    //         let add = false;
+    //         for (let i in this[prop]) {
+    //             if (val[prop].indexOf(this[prop][i]) > -1) {
+    //                 add = true;
+    //             }
+    //         }
+    //         return add;
+    //     }, find);
+    // }
 
-    function searchString(find, all, prop) {
-        return all.filter(function(val, i) {
-            return all[i][prop].toLowerCase() == find[prop].toLowerCase();
-        });
-    }
+    // function searchString(find, all, prop) {
+    //     return all.filter(function(val, i) {
+    //         return all[i][prop].toLowerCase() == find[prop].toLowerCase();
+    //     });
+    // }
 
     return {
         makeSearchObject: makeSearchObject,
+        quickSearch: quickSearch
     };
 })();
 
