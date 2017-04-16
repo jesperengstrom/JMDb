@@ -22,6 +22,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return makeNew.resetAddForm();
     });
 
+    //listener for search cancel
+    document.getElementById("search-cancel").addEventListener("click", function () {
+        return makeNew.resetSearchForm();
+    });
+
     //event listener for advanced search submit button
     document.getElementById("search-submit").addEventListener("click", function () {
         return search.makeSearchObject();
@@ -136,10 +141,24 @@ var makeNew = function () {
         });
     }
 
+    /**
+     * Resets the search form after search or cancel
+     */
+    function resetSearchForm() {
+        var inputs = document.querySelectorAll("#search-movie-form input");
+        inputs.forEach(function (el) {
+            if (el.type == "text" || el.type == "url") el.value = "";
+            if (el.type == "checkbox") el.checked = false;
+            yearSlider.noUiSlider.set(1920, 2020);
+            ratingSlider.noUiSlider.set(1, 10);
+        });
+    }
+
     return {
         makeMovie: makeMovie,
         Movie: Movie,
         resetAddForm: resetAddForm,
+        resetSearchForm: resetSearchForm,
         avRating: avRating
     };
 }();
@@ -275,6 +294,7 @@ var search = function () {
         if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
 
         performSearch(searchObj, store.getAllMovies());
+        makeNew.resetSearchForm();
     }
 
     //All the movies are then filtered by the search object in this order: 
@@ -352,66 +372,22 @@ var print = function () {
      * hence all the looping. OLD function for rendering old box. REMOVE?
      * * @param {object} movie - movie object
      */
-    function printEditGenreBox(movie) {
-        var curGenre = movie.genre;
-        var allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
-        var genreBoxes = "";
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-            for (var _iterator = allGenres[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var all = _step.value;
-
-                var added = false;
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
-
-                try {
-                    for (var _iterator2 = curGenre[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var has = _step2.value;
-
-                        if (all == has) {
-                            genreBoxes += "<div class=\"genre\"><input type=\"checkbox\" class=\"edit-genre-" + movie.id + "\" value=\"" + all + "\" checked>" + all + "</div>";
-                            added = true;
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
-                        }
-                    } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
-                        }
-                    }
-                }
-
-                if (!added) genreBoxes += "<div class=\"genre\"><input type=\"checkbox\" class=\"edit-genre-" + movie.id + "\" value=\"" + all + "\">" + all + "</div>";
-            }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
-            }
-        }
-
-        return genreBoxes;
-    }
+    // function printEditGenreBox(movie) {
+    //     let curGenre = movie.genre;
+    //     let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
+    //     let genreBoxes = "";
+    //     for (let all of allGenres) {
+    //         let added = false;
+    //         for (let has of curGenre) {
+    //             if (all == has) {
+    //                 genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}" checked>${all}</div>`;
+    //                 added = true;
+    //             }
+    //         }
+    //         if (!added) genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}">${all}</div>`;
+    //     }
+    //     return genreBoxes;
+    // }
 
     /**
      * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres
@@ -425,22 +401,22 @@ var print = function () {
                 var allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
                 var genreBoxes = "";
                 document.getElementById("edit-genre-title").innerHTML = "Edit genres for: " + movies[id].title;
-                var _iteratorNormalCompletion3 = true;
-                var _didIteratorError3 = false;
-                var _iteratorError3 = undefined;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator3 = allGenres[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        var all = _step3.value;
+                    for (var _iterator = allGenres[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var all = _step.value;
 
                         var added = false;
-                        var _iteratorNormalCompletion4 = true;
-                        var _didIteratorError4 = false;
-                        var _iteratorError4 = undefined;
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
 
                         try {
-                            for (var _iterator4 = curGenre[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                                var has = _step4.value;
+                            for (var _iterator2 = curGenre[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var has = _step2.value;
 
                                 if (all == has) {
                                     genreBoxes += "<div class=\"form-check-inline\">\n                                            <label class=\"form-check-label add-genre\">\n                                            <input type=\"checkbox\" class=\"edit-genre-" + id + " form-check-input\" value=\"" + all + "\" checked>" + all + "\n                                            </label>\n                                            </div>";
@@ -448,16 +424,16 @@ var print = function () {
                                 }
                             }
                         } catch (err) {
-                            _didIteratorError4 = true;
-                            _iteratorError4 = err;
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
                         } finally {
                             try {
-                                if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                                    _iterator4.return();
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
                                 }
                             } finally {
-                                if (_didIteratorError4) {
-                                    throw _iteratorError4;
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
                                 }
                             }
                         }
@@ -465,16 +441,16 @@ var print = function () {
                         if (!added) genreBoxes += "<div class=\"form-check-inline\">\n                                            <label class=\"form-check-label add-genre\">\n                                            <input type=\"checkbox\" class=\"edit-genre-" + id + " form-check-input\" value=\"" + all + "\">" + all + "\n                                            </label>\n                                            </div>";
                     }
                 } catch (err) {
-                    _didIteratorError3 = true;
-                    _iteratorError3 = err;
+                    _didIteratorError = true;
+                    _iteratorError = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                            _iterator3.return();
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
                         }
                     } finally {
-                        if (_didIteratorError3) {
-                            throw _iteratorError3;
+                        if (_didIteratorError) {
+                            throw _iteratorError;
                         }
                     }
                 }

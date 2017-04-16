@@ -14,6 +14,9 @@
     //listener for add cancel
     document.getElementById("add-cancel").addEventListener("click", () => makeNew.resetAddForm());
 
+    //listener for search cancel
+    document.getElementById("search-cancel").addEventListener("click", () => makeNew.resetSearchForm());
+
     //event listener for advanced search submit button
     document.getElementById("search-submit").addEventListener("click", () => search.makeSearchObject());
 
@@ -117,10 +120,24 @@ var makeNew = (function() {
         });
     }
 
+    /**
+     * Resets the search form after search or cancel
+     */
+    function resetSearchForm() {
+        let inputs = document.querySelectorAll("#search-movie-form input");
+        inputs.forEach((el) => {
+            if (el.type == "text" || el.type == "url") el.value = "";
+            if (el.type == "checkbox") el.checked = false;
+            yearSlider.noUiSlider.set(1920, 2020);
+            ratingSlider.noUiSlider.set(1, 10);
+        });
+    }
+
     return {
         makeMovie: makeMovie,
         Movie: Movie,
         resetAddForm: resetAddForm,
+        resetSearchForm: resetSearchForm,
         avRating: avRating
     };
 })();
@@ -260,6 +277,7 @@ var search = (function() {
         if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
 
         performSearch(searchObj, store.getAllMovies());
+        makeNew.resetSearchForm();
     }
 
     //All the movies are then filtered by the search object in this order: 
@@ -334,22 +352,22 @@ var print = (function() {
      * hence all the looping. OLD function for rendering old box. REMOVE?
      * * @param {object} movie - movie object
      */
-    function printEditGenreBox(movie) {
-        let curGenre = movie.genre;
-        let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
-        let genreBoxes = "";
-        for (let all of allGenres) {
-            let added = false;
-            for (let has of curGenre) {
-                if (all == has) {
-                    genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}" checked>${all}</div>`;
-                    added = true;
-                }
-            }
-            if (!added) genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}">${all}</div>`;
-        }
-        return genreBoxes;
-    }
+    // function printEditGenreBox(movie) {
+    //     let curGenre = movie.genre;
+    //     let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
+    //     let genreBoxes = "";
+    //     for (let all of allGenres) {
+    //         let added = false;
+    //         for (let has of curGenre) {
+    //             if (all == has) {
+    //                 genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}" checked>${all}</div>`;
+    //                 added = true;
+    //             }
+    //         }
+    //         if (!added) genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}">${all}</div>`;
+    //     }
+    //     return genreBoxes;
+    // }
 
     /**
      * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres
