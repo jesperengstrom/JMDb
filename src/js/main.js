@@ -419,7 +419,7 @@ var print = (function() {
 
                     wrapper.innerHTML += `
     <div class="card moviebox">
-            <div class="card-block">
+            <div class="card-block card-block-poster">
                 <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
             </div>
             <div class="card-block card-block-content">
