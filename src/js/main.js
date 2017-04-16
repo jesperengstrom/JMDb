@@ -422,20 +422,23 @@ var print = (function() {
             <div class="card-block">
                 <img src="${movie.cover}" class="movie-cover" alt="${movie.title}"/>
             </div>
-            <div class="card-block">
+            <div class="card-block card-block-content">
                 <h4 class="title">${movie.title} <span class="tone-down">(${movie.year})</span></h4>
                 <p>Director: <span class="credits tone-down">${movie.director}</span></p>
-                <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>
-            </div>        
-            <div class="card-footer">
-                <div>
+                <p>Starring: <span class="credits tone-down">${joinArray(movie.starring)}</span></p>        
+                </div>
+                <div class="card-footer card-footer-genres">
                     ${printGenres(movie.genre)}
                 </div>
+                
+            <div class="card-footer card-footer-rating">
             <div class="nobreak"><p>Rating: <span class="${setGradeColor(movie.averageRating)}">${movie.averageRating}</span>
             <span class="credits tone-down"> (${movie.rating.length} votes)</span>
             </p>
             </div>
-
+            </div>
+            
+            <div class="card-footer">
             <div>
             <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> |
                 <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>

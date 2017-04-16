@@ -1,37 +1,55 @@
-.card {
-    flex: 0 0 0% !important;
-    margin: 1rem;
-}
-
-.card-block {
-    padding-bottom: 0.5rem;
-}
-
-.card-footer,
-.modal-header,
-.modal-footer {
-    background: rgba(100, 149, 237, 0.1);
-}
-
-nav .navbar {
-    min-width: 100% !important;
-}
-
-.sticky-top {
-    min-width: 100%;
-}
-
-button,
-input,
-textarea,
-select {
-    font-family: 'Merriweather', serif !important;
-}
-
-.form-check-input {
-    margin-right: 0.2rem;
-}
-
-.form-check-inline {
-    margin-left: .75rem;
-}
+    .card {
+        flex: 0 0 0% !important;
+        margin: 1rem;
+    }
+    
+    .card-block {
+        padding-bottom: 0.5rem;
+    }
+    
+    .card-block-content {
+        padding-top: 0.5rem;
+    }
+    
+    .card-footer,
+    .modal-header,
+    .modal-footer {
+        background: rgba(100, 149, 237, 0.1);
+    }
+    
+    .card-footer {
+        border-top: 0;
+        padding-top: 0;
+    }
+    
+    .card-footer-genres {
+        background: white;
+    }
+    
+    .card-footer-rating {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    
+    nav .navbar {
+        min-width: 100% !important;
+    }
+    
+    .sticky-top {
+        min-width: 100%;
+    }
+    
+    button,
+    input,
+    textarea,
+    select {
+        font-family: 'Merriweather', serif !important;
+    }
+    
+    .form-check-input {
+        margin-right: 0.2rem;
+    }
+    
+    .form-check-inline {
+        margin-left: .75rem;
+    }
