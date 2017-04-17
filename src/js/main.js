@@ -199,30 +199,52 @@ var store = (function() {
 
         },
 
-        /* I failed to add event listeners dynamically to ratings/edit genre buttons, so i simply added onclick calls 
-        with the button element passed on. it's id number is the same as the ratings property id and the target movie's index. 
-        Maybe not the most solid solution but it works :/ */
-        addRating: function(button) {
-            let id = parseInt(button.id.split("-")[1]);
-            let rating = parseInt(document.getElementById("selectId-" + id).value);
+
+        /**
+         * Adds event listeners to all add-rating-button + Adds rating to a movie when the button is clicked. 
+         */
+        addRating: function(movies) {
+            //select all the rate-buttons
+            document.querySelectorAll(".rate-btn").forEach((el) => {
+                //add click listerners for each
+                el.addEventListener("click", () => {
+                    //get the id of the movie that was clicked
+                    let targetId = parseInt(el.getAttribute("data-id"));
+                    // + the new value
+                    let rating = parseInt(document.getElementById("selectId-" + targetId).value);
+
+                    //now we need to push the new rating to the arr, update the average and patch
+                    let targetMovie = movies.filter((el) => {
+                        if (el.id === targetId) return el;
+                    });
+
+                    let ratingsArr = targetMovie[0].rating;
+                    ratingsArr.push(rating);
+                    let newAverage = makeNew.avRating(ratingsArr);
+
+
+                    let ratingsPatch = {
+                        rating: ratingsArr,
+                        averageRating: newAverage
+                    };
+
+                    api.patchMovie(targetId, ratingsPatch);
+                });
+            });
 
             //old solution - updating rating locally
             // movieDatabase[id].rating.push(rating);
             // movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
             // return this.refreshMovies(this.getCurrentSelection());
 
-            let ratingsArr = movieDatabase[id].rating;
-            ratingsArr.push(rating);
-            let newAverage = makeNew.avRating(movieDatabase[id].rating);
+            // let ratingsArr = movieDatabase[id].rating;
+            // ratingsArr.push(rating);
+            // let newAverage = makeNew.avRating(movieDatabase[id].rating);
 
             //making an  object to patch
-            let ratingsPatch = {
-                rating: ratingsArr,
-                averageRating: newAverage
-            };
 
-            api.patchMovie(id, ratingsPatch);
         },
+
         //Same solution here...
         editGenre: function(newGenres, id) {
             //console.log(button);
@@ -307,8 +329,6 @@ var search = (function() {
      * * @param {arr} searchObj - what user is looking for
      */
     function makeQueryString(searchObj) {
-        console.log("search object:");
-        console.log(searchObj);
         let queryString = "?";
         queryString += searchObj.title ? "title_like=" + qSpace(searchObj.title) : "";
         queryString += searchObj.director ? "&director_like=" + qSpace(searchObj.director) : "";
@@ -432,38 +452,57 @@ var print = (function() {
 
     /**
      * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres
-     * @param {element} el - DOM-element clicked
+     * @param {array} movies - all movies printed
      */
     function renderGenresModal(movies) {
-        document.querySelectorAll(".edit-genre-button").forEach(function(el) {
-            el.addEventListener("click", function() {
-                let id = el.id.split("-")[1];
-                let curGenre = movies[id].genre;
+
+        //Selecting all the "edit genre"-buttons
+        document.querySelectorAll(".edit-genre-button").forEach((el) => {
+            //adding event listeners for each - with a huge anon function
+            el.addEventListener("click", () => {
+                //extracting the id from the button clicked
+                let targetId = parseInt(el.id.split("-")[1]);
+                //filtering out the movie with the same id
+                let targetMovie = movies.filter((el) => {
+                    if (el.id === targetId) return el;
+                });
+                //It now lives in an array with only one object [0]
+                let curGenre = targetMovie[0].genre;
                 let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
                 let genreBoxes = "";
-                document.getElementById("edit-genre-title").innerHTML = `Edit genres for: ${movies[id].title}`;
-                for (let all of allGenres) {
+                document.getElementById("edit-genre-title").innerHTML = `Edit genres for: ${targetMovie[0].title}`;
+                //looping through all genres to find out which ones the movie already has
+                for (let thisGenre of allGenres) {
                     let added = false;
+                    //by looping through its genres each time.
                     for (let has of curGenre) {
-                        if (all == has) {
-                            genreBoxes += `<div class="form-check-inline">
-                                            <label class="form-check-label add-genre">
-                                            <input type="checkbox" class="edit-genre-${id} form-check-input" value="${all}" checked>${all}
-                                            </label>
-                                            </div>`;
+                        if (thisGenre == has) {
+                            genreBoxes += genreModalCode(thisGenre, targetId, "checked");
                             added = true;
                         }
                     }
-                    if (!added) genreBoxes += `<div class="form-check-inline">
-                                            <label class="form-check-label add-genre">
-                                            <input type="checkbox" class="edit-genre-${id} form-check-input" value="${all}">${all}
-                                            </label>
-                                            </div>`;
+                    if (!added) genreBoxes += genreModalCode(thisGenre, targetId, "");
                 }
+                //adding event listeners for the buttons in the genre modal
                 document.getElementById("edit-genre-modal-content").innerHTML = genreBoxes;
-                document.getElementById("edit-genre-submit").setAttribute("data-id", id);
+                document.getElementById("edit-genre-submit").setAttribute("data-id", targetId);
             });
         });
+    }
+
+    /**
+     * 
+     * @param {string} genre - this genre
+     * @param {number} id - this movie id
+     * @param {string} checked - "checked" or "";
+     */
+    function genreModalCode(genre, id, checked) {
+        return `<div class="form-check-inline">
+            <label class="form-check-label add-genre">
+            <input type="checkbox" class="edit-genre-${id} form-check-input" value="${genre}" ${checked}>${genre}
+            </label>
+        </div>`;
+
     }
 
 
@@ -520,7 +559,7 @@ var print = (function() {
             <div class="card-footer">
             <div>
             <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> |
-                <a class="rateBtnClass inline-link" id="rateBtnId-${movie.id}" onclick="store.addRating(this)"> &#10148; Rate it!</a>
+                <a class="inline-link rate-btn" data-id="${movie.id}"> &#10148; Rate it!</a>
                 <select id="selectId-${movie.id}">
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -545,6 +584,7 @@ var print = (function() {
             //sends the current selection to storage so we can display it again. DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
             store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
+            store.addRating(moviesToPrint);
         },
         // toggleBox: function(el) {
         //     let id = "add-movie-section";

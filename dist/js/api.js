@@ -46,7 +46,6 @@ var api = function () {
         },
 
         patchMovie: function patchMovie(id, patchObj) {
-            console.log(patchObj);
             $.ajax({
                 method: "PATCH",
                 url: server + "/" + id,
