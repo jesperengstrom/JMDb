@@ -30,6 +30,18 @@
         let id = event.target.getAttribute("data-id");
         store.editGenre(addGenre, id);
     });
+
+    document.addEventListener("scroll", () => {
+        if ($(window).scrollTop() > 30) {
+            document.getElementsByTagName("nav")[0].classList.add("bg-faded");
+        }
+        if ($(window).scrollTop() < 30) {
+            document.getElementsByTagName("nav")[0].classList.remove("bg-faded");
+        }
+
+    });
+
+
 })();
 
 /**

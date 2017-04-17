@@ -48,6 +48,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         var id = event.target.getAttribute("data-id");
         store.editGenre(addGenre, id);
     });
+
+    document.addEventListener("scroll", function () {
+        if ($(window).scrollTop() > 30) {
+            document.getElementsByTagName("nav")[0].classList.add("bg-faded");
+        }
+        if ($(window).scrollTop() < 30) {
+            document.getElementsByTagName("nav")[0].classList.remove("bg-faded");
+        }
+    });
 })();
 
 /**

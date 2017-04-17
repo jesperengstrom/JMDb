@@ -1,3 +1,4 @@
+    //card
     .card {
         flex: 0 0 0% !important;
         margin: 1rem;
@@ -35,6 +36,11 @@
         padding-bottom: 0;
     }
     
+    //nav
+    .navbar {
+        padding: 0 1rem;
+    }
+    
     nav .navbar {
         min-width: 100% !important;
     }
@@ -43,6 +49,7 @@
         min-width: 100%;
     }
     
+    //forms
     button,
     input,
     textarea,
