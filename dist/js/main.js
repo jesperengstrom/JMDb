@@ -4,17 +4,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 //Event listeners that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
 (function () {
-    //original domready call
-    // window.addEventListener("DOMContentLoaded", () => store.refreshMovies(store.getAllMovies()));
-    //new api solution
+    //dom ready - load all movies
     window.addEventListener("DOMContentLoaded", function () {
         return api.getMovies();
     });
 
-    //old evt "show all movies". Retrieves local array, no new GET-request
-    // document.getElementById("show-all-movies").addEventListener("click", () => store.refreshMovies(store.getAllMovies()));
-
-    //evt "show all movies". Gets all from API once again
+    //nav "show all movies". Gets all from API once again
     document.getElementById("show-all-movies").addEventListener("click", function () {
         return api.getMovies();
     });
@@ -53,26 +48,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         var id = event.target.getAttribute("data-id");
         store.editGenre(addGenre, id);
     });
-
-    // evts disabled top rated & lowest rated functions
-    // document.getElementById("get-best-rated").addEventListener("click", () => store.refreshMovies(store.getTopRatedMovie()));
-    // document.getElementById("get-lowest-rated").addEventListener("click", () => store.refreshMovies(store.getWorstRatedMovie()));
-
-    //evts old add & search windows
-    // Array.from(document.getElementsByClassName("toggleButton")).forEach((el) => {
-    //     el.addEventListener("click", () => {
-    //         print.toggleBox(event.target);
-    //     });
-    // });
 })();
 
-/*Module #1 - make new movies. The add form input is collected and made into an object using a constructor and some helper methods which are set to 
-the constructor prototype. To have the constructor inside a closure is also handy because local var idCounter can be stored outside and provide 
-a unique id to every object passing through the constructor (would otherwise have been reset). The movies are then passed on to the storage. */
-
+/**
+ * Module #1 - make new movies. The add form input is collected and made into an object using a constructor and some helper methods which are set to 
+ * the constructor prototype. To have the constructor inside a closure is also handy because local var idCounter can be stored outside and provide 
+ * a unique id to every object passing through the constructor (would otherwise have been reset). The movies are then passed on to the storage.
+ */
 var makeNew = function () {
-    var idCounter = -1;
+    //var idCounter = -1;
 
+    //Movie constructor
     function Movie(title, rating, year, genre, cover, director, starring) {
         this.title = title;
         this.rating = [rating];
@@ -82,15 +68,14 @@ var makeNew = function () {
         this.genre = genre;
         this.cover = cover;
         //this.id = idCounter++;
-        this.averageRating = this.getAverageRating();
+        this.averageRating = avRating(this.rating);
     }
 
-    Movie.prototype.getAverageRating = function () {
-        var rating = parseFloat((this.rating.reduce(function (prev, cur) {
-            return prev + cur;
-        }) / this.rating.length).toFixed(1));
-        return rating;
-    };
+    //old prototype method that calcs average rating
+    // Movie.prototype.getAverageRating = function() {
+    //     let rating = parseFloat((this.rating.reduce((prev, cur) => prev + cur) / this.rating.length).toFixed(1));
+    //     return rating;
+    // };
 
     Movie.prototype.makeArray = function (string) {
         return string.split(", ");
@@ -113,18 +98,13 @@ var makeNew = function () {
         var newMovie = new Movie(movieTitle, movieRating, movieYear, movieGenre, movieCover, movieDirector, movieStarring);
         newMovie.starring = newMovie.makeArray(newMovie.starring);
 
-        //used to happen when a new movie was created
-        // store.addMovie(newMovie);
-        // store.refreshMovies(store.getAllMovies());
-        // print.toggleBox();
-
+        //post the new movie
         api.postMovie(newMovie);
         resetAddForm();
     }
 
     /**
-     * basically same as getAverageRating - but this is a general function since movies returning from the API are not of the Movie
-     * prototype. Better to keep this one & scrap the other?
+     * Returns the average rating
      * @param {array} arr - the ratings array
      */
     function avRating(arr) {
@@ -135,7 +115,7 @@ var makeNew = function () {
     }
 
     /**
-     * tedious way to reset the form
+     * Resets the add form after search or cancel
      */
     function resetAddForm() {
         var inputs = document.querySelectorAll("#add-movie-form input");
@@ -171,43 +151,29 @@ var makeNew = function () {
     };
 }();
 
-/*module #2 - Database. My existing movies are tucked away in storage here with no risk of manipulation once created.
-The module is providing public endpoints which are basically CRUD-methods (minus delete) to meet my specific needs*/
-
+/**
+ * module #2 - Database. My existing movies are tucked away in storage here with no risk of manipulation once created.
+ * The module is providing public endpoints which are basically CRUD-methods (minus delete) to meet my specific needs.
+ */
 var store = function () {
     //This is the array where all the movies are stored.
     var movieDatabase = [];
-    //This is the array of our current selection
+    //This is the array of our current selection - not needed
     var currentSelection = [];
 
     return {
         getAllMovies: function getAllMovies() {
             return movieDatabase;
         },
-        getTopRatedMovie: function getTopRatedMovie() {
-            var allMovies = this.getAllMovies();
-            var topRatedArr = [];
-            topRatedArr.push(allMovies.reduce(function (prev, cur) {
-                return prev.averageRating > cur.averageRating ? prev : cur;
-            }));
-            return topRatedArr;
-        },
-        getWorstRatedMovie: function getWorstRatedMovie() {
-            var allMovies = this.getAllMovies();
-            var lowRatedArr = [];
-            lowRatedArr.push(allMovies.reduce(function (prev, cur) {
-                return prev.averageRating < cur.averageRating ? prev : cur;
-            }));
-            return lowRatedArr;
-        },
+
         refreshMovies: function refreshMovies(movies) {
             return print.printMovies(movies);
         },
 
         //riginal function pushing movies to array REMOVE?
-        addMovie: function addMovie(obj) {
-            movieDatabase.push(obj);
-        },
+        // addMovie: function(obj) {
+        //     movieDatabase.push(obj);
+        // },
 
         /**
          * gets an array from the api, stores and sends to print
@@ -247,30 +213,12 @@ var store = function () {
                     api.patchMovie(targetId, ratingsPatch);
                 });
             });
-
-            //old solution - updating rating locally
-            // movieDatabase[id].rating.push(rating);
-            // movieDatabase[id].averageRating = movieDatabase[id].getAverageRating();
-            // return this.refreshMovies(this.getCurrentSelection());
-
-            // let ratingsArr = movieDatabase[id].rating;
-            // ratingsArr.push(rating);
-            // let newAverage = makeNew.avRating(movieDatabase[id].rating);
-
-            //making an  object to patch
         },
 
-        //Same solution here...
+        /**
+         * Sends new genres to api patch
+         */
         editGenre: function editGenre(newGenres, id) {
-            //console.log(button);
-            //let id = parseInt(button.id.split("-")[1]);
-            //let addGenre = Array.from(document.querySelectorAll(".edit-genre-" + id + ":checked")).map((val) => { return val.value; });
-            //console.log(addGenre);
-
-            //old local solution
-            // movieDatabase[id].genre = addGenre;
-            // return this.refreshMovies(this.getCurrentSelection());
-
             var genresPatch = {
                 genre: newGenres
             };
@@ -287,12 +235,16 @@ var store = function () {
     };
 }();
 
-/*Module #3 - Search. This one ectracts the data from the search form making it a search object. It then sends the object to the performSearch
-function that compares it to the movie databases' movie prop/values using some helper methods. It returns a search result array that is 
-stored and sent to the print module.*/
-
+/**
+ * Module #3 - Search. This one ectracts the data from the search form making it a search object. It then sends the object to the performSearch
+ * function that compares it to the movie databases' movie prop/values using some helper methods. It returns a search result array that is 
+ * stored and sent to the print module
+ */
 var search = function () {
 
+    /**
+     * Sends a simple querystring from the quick search to the api
+     */
     function quickSearch() {
         var input = document.getElementById("quick-search-text");
         var string = "?q=" + qSpace(input.value);
@@ -305,6 +257,9 @@ var search = function () {
     function Search() {}
     Search.prototype = new makeNew.Movie();
 
+    /**
+     * Makes a search object based on the advanced search form input.
+     */
     function makeSearchObject() {
         var searchObj = new Search();
 
@@ -324,17 +279,10 @@ var search = function () {
         var searchDirector = document.getElementById("search-director").value;
         if (searchDirector.length !== 0) searchObj.director = searchDirector;
 
-        //old solution, makes array of actors search. When we make a query string that's not necessary
-        // let searchStarring = document.getElementById("search-starring").value;
-        // if (searchStarring.length !== 0) searchObj.starring = searchObj.makeArray(searchStarring);
-
         var searchStarring = document.getElementById("search-starring").value;
         if (searchStarring.length !== 0) searchObj.starring = searchStarring;
 
-        //old - filtered allmovies client side
-        //performSearch(searchObj, store.getAllMovies());
-
-        //now filters with new get request + querystring
+        //search object --> query string --> api.
         api.getMovies(makeQueryString(searchObj));
         makeNew.resetSearchForm();
     }
@@ -374,60 +322,17 @@ var search = function () {
         return string.replace(/,/g, "&");
     }
 
-    //All the movies are then filtered by the search object in this order: 
-    //year interval, ratings interval, genres, director and title.
-    // function performSearch(find, all) {
-
-    //     var searchResult = all.filter((val) => val.year >= find.year[0] && val.year <= find.year[1])
-    //         .filter((val) => (val.averageRating >= find.rating[0] && val.averageRating <= find.rating[1]));
-
-    //     if (find.hasOwnProperty("genre")) {
-    //         searchResult = filterArray(find, searchResult, "genre");
-    //     }
-    //     if (find.hasOwnProperty("starring")) {
-    //         searchResult = filterArray(find, searchResult, "starring");
-    //     }
-    //     if (find.hasOwnProperty("director")) {
-    //         searchResult = searchString(find, searchResult, "director");
-    //     }
-    //     if (find.hasOwnProperty("title")) {
-    //         searchResult = searchString(find, searchResult, "title");
-    //     }
-
-    //     store.refreshMovies(searchResult);
-    // }
-
-    /* this is the function that took the longest time to figure out. It cross-filters two arrays and returns an element 
-    (movie) only if it's present in the other (search). Had to make sure a result wasn't returned too early
-    so I ended up with an indexOf-method in an if-statement inside a loop inside a filter method :) */
-    // function filterArray(find, all, prop) {
-    //     return all.filter(function(val) {
-    //         let add = false;
-    //         for (let i in this[prop]) {
-    //             if (val[prop].indexOf(this[prop][i]) > -1) {
-    //                 add = true;
-    //             }
-    //         }
-    //         return add;
-    //     }, find);
-    // }
-
-    // function searchString(find, all, prop) {
-    //     return all.filter(function(val, i) {
-    //         return all[i][prop].toLowerCase() == find[prop].toLowerCase();
-    //     });
-    // }
-
     return {
         makeSearchObject: makeSearchObject,
         quickSearch: quickSearch
     };
 }();
 
-/*Module #4 - print-to-screen. The main (public) function printMovies takes an array and prints each item to screen.
-It also has some private helper methods. This module also contains other screen-related functions such as search and 
-add box toggle for example. */
-
+/**
+ * Module #4 - print-to-screen. The main (public) function printMovies takes an array and prints each item to screen.
+ * It also has some private helper methods. This module also contains other screen-related functions such as search and 
+ * add box toggle for example.
+ */
 var print = function () {
 
     function setGradeColor(grade) {
@@ -443,29 +348,7 @@ var print = function () {
     }
 
     /**
-     * This very unpure and kinda tedious function renders the edit-genres-box for each movie. It's current genres has to be checked,  
-     * hence all the looping. OLD function for rendering old box. REMOVE?
-     * * @param {object} movie - movie object
-     */
-    // function printEditGenreBox(movie) {
-    //     let curGenre = movie.genre;
-    //     let allGenres = ["Drama", "Romantic", "Comedy", "Thriller", "Action", "Horror", "Sci-fi", "Documentary", "Animated", "Kids"];
-    //     let genreBoxes = "";
-    //     for (let all of allGenres) {
-    //         let added = false;
-    //         for (let has of curGenre) {
-    //             if (all == has) {
-    //                 genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}" checked>${all}</div>`;
-    //                 added = true;
-    //             }
-    //         }
-    //         if (!added) genreBoxes += `<div class="genre"><input type="checkbox" class="edit-genre-${movie.id}" value="${all}">${all}</div>`;
-    //     }
-    //     return genreBoxes;
-    // }
-
-    /**
-     * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres
+     * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres.
      * @param {array} movies - all movies printed
      */
     function renderGenresModal(movies) {
@@ -558,14 +441,10 @@ var print = function () {
         return "<div class=\"form-check-inline\">\n            <label class=\"form-check-label add-genre\">\n            <input type=\"checkbox\" class=\"edit-genre-" + id + " form-check-input\" value=\"" + genre + "\" " + checked + ">" + genre + "\n            </label>\n        </div>";
     }
 
-    //function for toggle old box. REMOVE? (dont forget revealing reference)
-    // function toggleGenreBox() {
-    //     let id = event.target.id.split("-")[1];
-    //     let box = document.getElementById("edit-genre-box-" + id);
-    //     box.classList.toggle("visible");
-    //     box.classList.toggle("hidden");
-    // }
-
+    /**
+     * returns a string of an object, for several actors
+     * @param {object} val 
+     */
     function joinArray(val) {
         if ((typeof val === "undefined" ? "undefined" : _typeof(val)) === "object") {
             return val.join(", ");
@@ -574,6 +453,10 @@ var print = function () {
     }
 
     return {
+
+        /**
+         * Main function thats prints the movie cards
+         */
         printMovies: function printMovies(movies) {
             var moviesToPrint = movies;
             var wrapper = document.getElementById("movie-wrapper");
@@ -587,7 +470,7 @@ var print = function () {
                 for (var i = moviesToPrint.length - 1; i >= 0; i--) {
                     var movie = moviesToPrint[i];
 
-                    wrapper.innerHTML += "\n    <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n                </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n            <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n            <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer\">\n            <div>\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> |\n                <a class=\"inline-link rate-btn\" data-id=\"" + movie.id + "\"> &#10148; Rate it!</a>\n                <select id=\"selectId-" + movie.id + "\">\n                    <option value=\"1\">1</option>\n                    <option value=\"2\">2</option>\n                    <option value=\"3\">3</option>\n                    <option value=\"4\">4</option>\n                    <option value=\"5\" selected=\"selected\">5</option>\n                    <option value=\"6\">6</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"9\">9</option>\n                    <option value=\"10\">10</option>\n                </select>\n            </div>\n            </div>          \n            </div>\n\n                ";
+                    wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer\">\n            <div>\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> |\n                <a class=\"inline-link rate-btn\" data-id=\"" + movie.id + "\"> &#10148; Rate it!</a>\n                <select id=\"selectId-" + movie.id + "\">\n                    <option value=\"1\">1</option>\n                    <option value=\"2\">2</option>\n                    <option value=\"3\">3</option>\n                    <option value=\"4\">4</option>\n                    <option value=\"5\" selected=\"selected\">5</option>\n                    <option value=\"6\">6</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"9\">9</option>\n                    <option value=\"10\">10</option>\n                </select>\n            </div>\n            </div>          \n            </div>\n\n                ";
                 }
             }
             //sends the current selection to storage so we can display it again. DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
