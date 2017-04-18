@@ -1,7 +1,8 @@
 var api = (function() {
-    var server = "https://jmdb.herokuapp.com/movies";
+    //var server = "https://jmdb.herokuapp.com/movies";
+    var server = "http://jmdb.azurewebsites.net/movies";
 
-    //an alternative server, maybe this one doesn't erase my files
+    //backup
     //server = "https://api.myjson.com/bins/10h80z";
 
     return {
