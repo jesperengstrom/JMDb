@@ -16,10 +16,12 @@ var api = (function() {
 
             $.getJSON({
                 url: thisUrl,
+                beforeSend: () => { print.showSpinner(); },
                 success: (fetchedMovies) => {
                     console.log("fetched from: ", thisUrl, fetchedMovies);
                     store.storeMovies(fetchedMovies);
                 },
+                complete: () => { print.hideSpinner(); },
                 error: (error) => {
                     alert("There was a problem with loading the movies: ", error);
                 }
@@ -33,11 +35,13 @@ var api = (function() {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(movie),
+                beforeSend: () => { print.showSpinner(); },
                 success: (response) => {
                     console.log("successfully posted:", response);
                     //fetching all movies once again
                     api.getMovies();
                 },
+                complete: () => { print.hideSpinner(); },
                 error: (error) => {
                     alert("Oh no, there was an error posting your movie:", error);
                 }
@@ -51,11 +55,13 @@ var api = (function() {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(patchObj),
+                beforeSend: () => { print.showSpinner(); },
                 success: (response) => {
                     console.log("successfully patched:", response);
                     //fetching all movies once again
                     api.getMovies();
                 },
+                complete: () => { print.hideSpinner(); },
                 error: (error) => {
                     alert("Oh no, there was an error patching your movie:", error);
                 }

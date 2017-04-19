@@ -471,6 +471,21 @@ var print = (function() {
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
         },
+
+        showSpinner: function() {
+            let spinner = document.getElementById("spinner");
+            spinner.classList.remove("hidden");
+            spinner.classList.add("visible");
+        },
+
+        /**
+         * Hides spinner
+         */
+        hideSpinner: function() {
+            let spinner = document.getElementById("spinner");
+            spinner.classList.remove("visible");
+            spinner.classList.add("hidden");
+        }
     };
 })();
 

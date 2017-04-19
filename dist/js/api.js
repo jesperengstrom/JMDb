@@ -18,9 +18,15 @@ var api = function () {
 
             $.getJSON({
                 url: thisUrl,
+                beforeSend: function beforeSend() {
+                    print.showSpinner();
+                },
                 success: function success(fetchedMovies) {
                     console.log("fetched from: ", thisUrl, fetchedMovies);
                     store.storeMovies(fetchedMovies);
+                },
+                complete: function complete() {
+                    print.hideSpinner();
                 },
                 error: function error(_error) {
                     alert("There was a problem with loading the movies: ", _error);
@@ -35,10 +41,16 @@ var api = function () {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(movie),
+                beforeSend: function beforeSend() {
+                    print.showSpinner();
+                },
                 success: function success(response) {
                     console.log("successfully posted:", response);
                     //fetching all movies once again
                     api.getMovies();
+                },
+                complete: function complete() {
+                    print.hideSpinner();
                 },
                 error: function error(_error2) {
                     alert("Oh no, there was an error posting your movie:", _error2);
@@ -53,10 +65,16 @@ var api = function () {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(patchObj),
+                beforeSend: function beforeSend() {
+                    print.showSpinner();
+                },
                 success: function success(response) {
                     console.log("successfully patched:", response);
                     //fetching all movies once again
                     api.getMovies();
+                },
+                complete: function complete() {
+                    print.hideSpinner();
                 },
                 error: function error(_error3) {
                     alert("Oh no, there was an error patching your movie:", _error3);

@@ -486,6 +486,21 @@ var print = function () {
             store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
+        },
+
+        showSpinner: function showSpinner() {
+            var spinner = document.getElementById("spinner");
+            spinner.classList.remove("hidden");
+            spinner.classList.add("visible");
+        },
+
+        /**
+         * Hides spinner
+         */
+        hideSpinner: function hideSpinner() {
+            var spinner = document.getElementById("spinner");
+            spinner.classList.remove("visible");
+            spinner.classList.add("hidden");
         }
     };
 }();
