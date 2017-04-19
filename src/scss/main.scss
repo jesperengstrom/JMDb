@@ -2,6 +2,7 @@
 @import "type";
 @import "padding-margin";
 @import "display";
+@import "spinner";
 html,
 body {
     margin: 0;
@@ -71,14 +72,6 @@ hr {
     margin: 1rem;
 }
 
-// #add-movie-section {
-//     transition: all 1s ease;
-//     transform: translateY(-200%);
-// }
-// #search-movie-section {
-//     transition: all 1s ease;
-//     transform: translateY(-200%);
-// }
 .tone-down {
     color: lightslategrey;
 }
@@ -98,17 +91,11 @@ hr {
 }
 
 #movie-wrapper {
-    // max-width: 75%;
-    // min-width: 75%;
     flex-wrap: wrap;
     transition: all 0.3s ease;
 }
 
 .moviebox {
-    // padding: 1rem;
-    // margin: 2rem;
-    // min-width: 25%;
-    // max-width: 25%;
     animation: show .5s ease-in-out;
 }
 
@@ -152,30 +139,6 @@ hr {
     flex-wrap: wrap;
 }
 
-// .genre {
-//     font-size: 0.75rem;
-// }
 .nobreak {
     white-space: nowrap;
 }
-
-// @media screen and (max-width: 1150px) {
-//     #movie-wrapper {
-//         max-width: 95%;
-//         justify-content: center;
-//     }
-//     #add-movie-section {
-//         width: 80%
-//     }
-//     #search-movie-section {
-//         width: 80%
-//     }
-//     .flex-row {
-//         flex-wrap: wrap;
-//     }
-// }
-// @media screen and (max-width: 430px) {
-//     #movie-wrapper {
-//         justify-content: flex-start;
-//     }
-// }
