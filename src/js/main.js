@@ -454,7 +454,7 @@ var print = (function() {
             </div>
             
             <div class="card-footer d-flex justify-content-between">
-            <div>
+            <div class="nobreak">
             <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> 
             |
                 ${printRateIt(movie.id)}

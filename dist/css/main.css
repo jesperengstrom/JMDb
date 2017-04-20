@@ -286,4 +286,5 @@ hr {
       flex-wrap: wrap; }
 
 .nobreak {
+  overflow: hidden;
   white-space: nowrap; }
