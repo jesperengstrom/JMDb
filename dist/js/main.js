@@ -2,7 +2,6 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-//Event listeners that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
 (function () {
     //dom ready - load all movies
     window.addEventListener("DOMContentLoaded", function () {
@@ -112,10 +111,6 @@ var makeNew = function () {
         resetAddForm();
     }
 
-    /**
-     * Returns the average rating
-     * @param {array} arr - the ratings array
-     */
     function avRating(arr) {
         var rating = parseFloat((arr.reduce(function (prev, cur) {
             return prev + cur;
@@ -123,9 +118,6 @@ var makeNew = function () {
         return rating;
     }
 
-    /**
-     * Resets the add form after search or cancel
-     */
     function resetAddForm() {
         var inputs = document.querySelectorAll("#add-movie-form input");
         inputs.forEach(function (el) {
@@ -138,9 +130,6 @@ var makeNew = function () {
         });
     }
 
-    /**
-     * Resets the search form after search or cancel
-     */
     function resetSearchForm() {
         var inputs = document.querySelectorAll("#search-movie-form input");
         inputs.forEach(function (el) {
@@ -170,6 +159,8 @@ var store = function () {
     //This is the array of our current selection - not needed
     var currentSelection = [];
 
+    var hasVoted = {};
+
     return {
         getAllMovies: function getAllMovies() {
             return movieDatabase;
@@ -193,16 +184,14 @@ var store = function () {
         },
 
         /**
-         * Adds event listeners to all add-rating-button + Adds rating to a movie when the button is clicked. 
+         * Rate movies event listeners + what happens when we rate
          */
         addRating: function addRating(movies) {
-            //select all the rate-buttons
             document.querySelectorAll(".rate-btn").forEach(function (el) {
-                //add click listerners for each
                 el.addEventListener("click", function () {
                     //get the id of the movie that was clicked
                     var targetId = parseInt(el.getAttribute("data-id"));
-                    // + the new value
+                    // + new value
                     var rating = parseInt(document.getElementById("selectId-" + targetId).value);
 
                     //now we need to push the new rating to the arr, update the average and patch
@@ -220,13 +209,12 @@ var store = function () {
                     };
 
                     api.patchMovie(targetId, ratingsPatch);
+                    hasVoted[targetId] = true;
+                    console.log(hasVoted);
                 });
             });
         },
 
-        /**
-         * Sends new genres to api patch
-         */
         editGenre: function editGenre(newGenres, id) {
             var genresPatch = {
                 genre: newGenres
@@ -240,6 +228,10 @@ var store = function () {
         },
         getCurrentSelection: function getCurrentSelection() {
             return this.currentSelection;
+        },
+        haveYouVoted: function haveYouVoted(id) {
+            if (hasVoted.hasOwnProperty(id)) return true;
+            return false;
         }
     };
 }();
@@ -251,9 +243,6 @@ var store = function () {
  */
 var search = function () {
 
-    /**
-     * Sends a simple querystring from the quick search to the api
-     */
     function quickSearch() {
         var input = document.getElementById("quick-search-text");
         var string = "?q=" + qSpace(input.value);
@@ -267,7 +256,7 @@ var search = function () {
     Search.prototype = new makeNew.Movie();
 
     /**
-     * Makes a search object based on the advanced search form input.
+     * Advanced search form input is handled here.
      */
     function makeSearchObject() {
         var searchObj = new Search();
@@ -316,16 +305,14 @@ var search = function () {
     }
 
     /**
-     * replaces spaces with +
-     * @param {string} string 
+     * helper for query string
      */
     function qSpace(string) {
         return string.replace(/ /g, "+");
     }
 
     /**
-     * replaces spaces with +
-     * @param {string} string 
+     * helper for query string
      */
     function qComma(string) {
         return string.replace(/,/g, "&");
@@ -357,14 +344,23 @@ var print = function () {
     }
 
     /**
+     * checks if we aldready voted for a movie, in that case returns other code
+     * @param {string} id 
+     */
+    function printRateIt(id) {
+        if (store.haveYouVoted(id)) {
+            return "<span class=\"inline-link\"><span class=\"badgrade\">&#10084;</span>  Rated!</span>";
+        }
+        return "\n                <a class=\"inline-link rate-btn\" data-id=\"" + id + "\"> &#10148; Rate it!</a>\n                <select id=\"selectId-" + id + "\">\n                    <option value=\"1\">1</option>\n                    <option value=\"2\">2</option>\n                    <option value=\"3\">3</option>\n                    <option value=\"4\">4</option>\n                    <option value=\"5\" selected=\"selected\">5</option>\n                    <option value=\"6\">6</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"9\">9</option>\n                    <option value=\"10\">10</option>\n                </select>\n                ";
+    }
+
+    /**
      * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres.
      * @param {array} movies - all movies printed
      */
     function renderGenresModal(movies) {
 
-        //Selecting all the "edit genre"-buttons
         document.querySelectorAll(".edit-genre-button").forEach(function (el) {
-            //adding event listeners for each - with a huge anon function
             el.addEventListener("click", function () {
                 //extracting the id from the button clicked
                 var targetId = parseInt(el.id.split("-")[1]);
@@ -418,7 +414,6 @@ var print = function () {
 
                         if (!added) genreBoxes += genreModalCode(thisGenre, targetId, "");
                     }
-                    //adding event listeners for the buttons in the genre modal
                 } catch (err) {
                     _didIteratorError = true;
                     _iteratorError = err;
@@ -441,7 +436,7 @@ var print = function () {
     }
 
     /**
-     * 
+     * prints all the checkboxes for edit genre
      * @param {string} genre - this genre
      * @param {number} id - this movie id
      * @param {string} checked - "checked" or "";
@@ -451,7 +446,7 @@ var print = function () {
     }
 
     /**
-     * returns a string of an object, for several actors
+     * joins several actors to a string
      * @param {object} val 
      */
     function joinArray(val) {
@@ -464,7 +459,7 @@ var print = function () {
     return {
 
         /**
-         * Main function thats prints the movie cards
+         * prints the movie cards
          */
         printMovies: function printMovies(movies) {
             var moviesToPrint = movies;
@@ -479,10 +474,10 @@ var print = function () {
                 for (var i = moviesToPrint.length - 1; i >= 0; i--) {
                     var movie = moviesToPrint[i];
 
-                    wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer\">\n            <div>\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> |\n                <a class=\"inline-link rate-btn\" data-id=\"" + movie.id + "\"> &#10148; Rate it!</a>\n                <select id=\"selectId-" + movie.id + "\">\n                    <option value=\"1\">1</option>\n                    <option value=\"2\">2</option>\n                    <option value=\"3\">3</option>\n                    <option value=\"4\">4</option>\n                    <option value=\"5\" selected=\"selected\">5</option>\n                    <option value=\"6\">6</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"7\">7</option>\n                    <option value=\"8\">8</option>\n                    <option value=\"9\">9</option>\n                    <option value=\"10\">10</option>\n                </select>\n            </div>\n            </div>          \n            </div>\n\n                ";
+                    wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer d-flex justify-content-between\">\n            <div>\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> \n            |\n                " + printRateIt(movie.id) + "\n            </div>\n            </div>          \n            </div>\n\n                ";
                 }
             }
-            //sends the current selection to storage so we can display it again. DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
+            //DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
             store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
@@ -494,9 +489,6 @@ var print = function () {
             spinner.classList.add("visible");
         },
 
-        /**
-         * Hides spinner
-         */
         hideSpinner: function hideSpinner() {
             var spinner = document.getElementById("spinner");
             spinner.classList.remove("visible");

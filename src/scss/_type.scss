@@ -37,10 +37,11 @@ p {
 }
 
 .inline-link {
-    color: darkred;
-    margin: 0.5rem 0rem;
+    // color: seagreen;
+    //margin: 0.5rem 0rem;
     white-space: nowrap;
     overflow: visible;
+    display: inline-block;
 }
 
 .inline-link,
@@ -48,4 +49,14 @@ p {
     font-size: 0.75rem;
     text-transform: uppercase;
     font-variant: small-caps;
+}
+
+.goodgrade {
+    color: seagreen;
+    font-weight: bold;
+}
+
+.badgrade {
+    color: indianred;
+    font-weight: bold;
 }

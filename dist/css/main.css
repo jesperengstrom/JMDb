@@ -82,16 +82,23 @@ p {
   line-height: 1.5rem; }
 
 .inline-link {
-  color: darkred;
-  margin: 0.5rem 0rem;
   white-space: nowrap;
-  overflow: visible; }
+  overflow: visible;
+  display: inline-block; }
 
 .inline-link,
 .genre-box {
   font-size: 0.75rem;
   text-transform: uppercase;
   font-variant: small-caps; }
+
+.goodgrade {
+  color: seagreen;
+  font-weight: bold; }
+
+.badgrade {
+  color: indianred;
+  font-weight: bold; }
 
 .margin-right {
   margin-right: 2rem; }
@@ -232,14 +239,6 @@ hr {
 
 .credits {
   margin-left: 0px; }
-
-.goodgrade {
-  color: seagreen;
-  font-weight: bold; }
-
-.badgrade {
-  color: indianred;
-  font-weight: bold; }
 
 #movie-wrapper {
   -ms-flex-wrap: wrap;

@@ -1,4 +1,3 @@
-//Event listeners that handles page load, submit movie button, search submit, feature "buttons" on page header and toggling of form fields.
 (function() {
     //dom ready - load all movies
     window.addEventListener("DOMContentLoaded", () => api.getMovies());
@@ -95,18 +94,11 @@ var makeNew = (function() {
         resetAddForm();
     }
 
-    /**
-     * Returns the average rating
-     * @param {array} arr - the ratings array
-     */
     function avRating(arr) {
         let rating = parseFloat((arr.reduce((prev, cur) => prev + cur) / arr.length).toFixed(1));
         return rating;
     }
 
-    /**
-     * Resets the add form after search or cancel
-     */
     function resetAddForm() {
         let inputs = document.querySelectorAll("#add-movie-form input");
         inputs.forEach((el) => {
@@ -119,9 +111,6 @@ var makeNew = (function() {
         });
     }
 
-    /**
-     * Resets the search form after search or cancel
-     */
     function resetSearchForm() {
         let inputs = document.querySelectorAll("#search-movie-form input");
         inputs.forEach((el) => {
@@ -151,6 +140,8 @@ var store = (function() {
     //This is the array of our current selection - not needed
     var currentSelection = [];
 
+    var hasVoted = {};
+
     return {
         getAllMovies: function() {
             return movieDatabase;
@@ -175,16 +166,14 @@ var store = (function() {
         },
 
         /**
-         * Adds event listeners to all add-rating-button + Adds rating to a movie when the button is clicked. 
+         * Rate movies event listeners + what happens when we rate
          */
         addRating: function(movies) {
-            //select all the rate-buttons
             document.querySelectorAll(".rate-btn").forEach((el) => {
-                //add click listerners for each
                 el.addEventListener("click", () => {
                     //get the id of the movie that was clicked
                     let targetId = parseInt(el.getAttribute("data-id"));
-                    // + the new value
+                    // + new value
                     let rating = parseInt(document.getElementById("selectId-" + targetId).value);
 
                     //now we need to push the new rating to the arr, update the average and patch
@@ -202,13 +191,12 @@ var store = (function() {
                     };
 
                     api.patchMovie(targetId, ratingsPatch);
+                    hasVoted[targetId] = true;
+                    console.log(hasVoted);
                 });
             });
         },
 
-        /**
-         * Sends new genres to api patch
-         */
         editGenre: function(newGenres, id) {
             let genresPatch = {
                 genre: newGenres
@@ -222,6 +210,10 @@ var store = (function() {
         },
         getCurrentSelection: function() {
             return this.currentSelection;
+        },
+        haveYouVoted: function(id) {
+            if (hasVoted.hasOwnProperty(id)) return true;
+            return false;
         }
     };
 })();
@@ -234,9 +226,6 @@ var store = (function() {
  */
 var search = (function() {
 
-    /**
-     * Sends a simple querystring from the quick search to the api
-     */
     function quickSearch() {
         let input = document.getElementById("quick-search-text");
         let string = "?q=" + qSpace(input.value);
@@ -250,7 +239,7 @@ var search = (function() {
     Search.prototype = new makeNew.Movie();
 
     /**
-     * Makes a search object based on the advanced search form input.
+     * Advanced search form input is handled here.
      */
     function makeSearchObject() {
         var searchObj = new Search();
@@ -297,16 +286,14 @@ var search = (function() {
     }
 
     /**
-     * replaces spaces with +
-     * @param {string} string 
+     * helper for query string
      */
     function qSpace(string) {
         return string.replace(/ /g, "+");
     }
 
     /**
-     * replaces spaces with +
-     * @param {string} string 
+     * helper for query string
      */
     function qComma(string) {
         return string.replace(/,/g, "&");
@@ -338,14 +325,39 @@ var print = (function() {
     }
 
     /**
+     * checks if we aldready voted for a movie, in that case returns other code
+     * @param {string} id 
+     */
+    function printRateIt(id) {
+        if (store.haveYouVoted(id)) {
+            return `<span class="inline-link"><span class="badgrade">&#10084;</span>  Rated!</span>`;
+        }
+        return `
+                <a class="inline-link rate-btn" data-id="${id}"> &#10148; Rate it!</a>
+                <select id="selectId-${id}">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected="selected">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                `;
+    }
+
+    /**
      * Function for rendering the genre boxes in the modal dynamically based on aldready aquired genres.
      * @param {array} movies - all movies printed
      */
     function renderGenresModal(movies) {
 
-        //Selecting all the "edit genre"-buttons
         document.querySelectorAll(".edit-genre-button").forEach((el) => {
-            //adding event listeners for each - with a huge anon function
             el.addEventListener("click", () => {
                 //extracting the id from the button clicked
                 let targetId = parseInt(el.id.split("-")[1]);
@@ -370,7 +382,7 @@ var print = (function() {
                     }
                     if (!added) genreBoxes += genreModalCode(thisGenre, targetId, "");
                 }
-                //adding event listeners for the buttons in the genre modal
+
                 document.getElementById("edit-genre-modal-content").innerHTML = genreBoxes;
                 document.getElementById("edit-genre-submit").setAttribute("data-id", targetId);
             });
@@ -378,7 +390,7 @@ var print = (function() {
     }
 
     /**
-     * 
+     * prints all the checkboxes for edit genre
      * @param {string} genre - this genre
      * @param {number} id - this movie id
      * @param {string} checked - "checked" or "";
@@ -392,7 +404,7 @@ var print = (function() {
     }
 
     /**
-     * returns a string of an object, for several actors
+     * joins several actors to a string
      * @param {object} val 
      */
     function joinArray(val) {
@@ -405,7 +417,7 @@ var print = (function() {
     return {
 
         /**
-         * Main function thats prints the movie cards
+         * prints the movie cards
          */
         printMovies: function(movies) {
             var moviesToPrint = movies;
@@ -441,24 +453,11 @@ var print = (function() {
             </div>
             </div>
             
-            <div class="card-footer">
+            <div class="card-footer d-flex justify-content-between">
             <div>
-            <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> |
-                <a class="inline-link rate-btn" data-id="${movie.id}"> &#10148; Rate it!</a>
-                <select id="selectId-${movie.id}">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5" selected="selected">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
+            <a class="inline-link edit-genre-button" id="openGenreBox-${movie.id}" data-toggle="modal" data-target="#edit-genre-modal">&#10148; Edit genre</a> 
+            |
+                ${printRateIt(movie.id)}
             </div>
             </div>          
             </div>
@@ -466,7 +465,7 @@ var print = (function() {
                 `;
                 }
             }
-            //sends the current selection to storage so we can display it again. DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
+            //DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
             store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
@@ -478,9 +477,6 @@ var print = (function() {
             spinner.classList.add("visible");
         },
 
-        /**
-         * Hides spinner
-         */
         hideSpinner: function() {
             let spinner = document.getElementById("spinner");
             spinner.classList.remove("visible");
