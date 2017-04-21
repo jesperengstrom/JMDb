@@ -30,12 +30,21 @@
         store.editGenre(addGenre, id);
     });
 
+    //evt delete movie
+    document.getElementById("delete-movie-btn").addEventListener("click", function() {
+        let id = document.getElementById("edit-genre-submit").getAttribute("data-id");
+        if (confirm("Are you sure you want to delete this movie?")) {
+            api.deleteMovie(id);
+        }
+
+    });
+
     document.addEventListener("scroll", () => {
         if ($(window).scrollTop() > 30) {
-            document.getElementsByTagName("nav")[0].classList.add("bg-faded");
+            document.getElementsByTagName("nav")[0].classList.add("box-shadow");
         }
         if ($(window).scrollTop() < 30) {
-            document.getElementsByTagName("nav")[0].classList.remove("bg-faded");
+            document.getElementsByTagName("nav")[0].classList.remove("box-shadow");
         }
 
     });
@@ -192,7 +201,6 @@ var store = (function() {
 
                     api.patchMovie(targetId, ratingsPatch);
                     hasVoted[targetId] = true;
-                    console.log(hasVoted);
                 });
             });
         },

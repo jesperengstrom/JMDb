@@ -80,6 +80,29 @@ var api = function () {
                     alert("Oh no, there was an error patching your movie:", _error3);
                 }
             });
+        },
+
+        deleteMovie: function deleteMovie(id) {
+            $.ajax({
+                method: "DELETE",
+                url: server + "/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                beforeSend: function beforeSend() {
+                    print.showSpinner();
+                },
+                success: function success() {
+                    console.log("successfully deleted:");
+                    //fetching all movies once again
+                    api.getMovies();
+                },
+                complete: function complete() {
+                    print.hideSpinner();
+                },
+                error: function error(_error4) {
+                    alert("Oh no, there was an error deleting the movie:", _error4);
+                }
+            });
         }
     };
 }();

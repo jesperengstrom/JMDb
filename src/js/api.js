@@ -67,6 +67,25 @@ var api = (function() {
                 }
             });
 
+        },
+
+        deleteMovie: function(id) {
+            $.ajax({
+                method: "DELETE",
+                url: server + "/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                beforeSend: () => { print.showSpinner(); },
+                success: () => {
+                    console.log("successfully deleted:");
+                    //fetching all movies once again
+                    api.getMovies();
+                },
+                complete: () => { print.hideSpinner(); },
+                error: (error) => {
+                    alert("Oh no, there was an error deleting the movie:", error);
+                }
+            });
         }
     };
 })();

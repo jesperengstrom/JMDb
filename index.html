@@ -16,7 +16,7 @@
 
 <body>
     <!--nav-->
-    <nav class="navbar sticky-top navbar-toggleable-sm navbar-light">
+    <nav class="navbar sticky-top navbar-toggleable-sm navbar-light bg-blue">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -308,7 +308,7 @@
         </div>
     </div>
     <!--end modal search-->
-    <!--Modal add-genre-->
+    <!--Modal edit-genre-->
     <div class="modal fade" id="edit-genre-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -328,7 +328,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12" id="edit-genre-modal-footer">
@@ -338,12 +338,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row">
+                            <h5 class="modal-title title">Delete this movie</h5>
+                            <div class="col-sm-12">
+                                <p>
+                                    <a data-dismiss="modal" id="delete-movie-btn">&#10148; Delete!</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <!--end modal add genre-->
     <!-- movie display section -->
-    <section class="container">
+    <section class="container" id="movie-section">
         <div class="card-deck" id="movie-wrapper">
         </div>
     </section>
