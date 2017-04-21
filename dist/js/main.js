@@ -48,12 +48,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         store.editGenre(addGenre, id);
     });
 
+    //evt delete movie
+    document.getElementById("delete-movie-btn").addEventListener("click", function () {
+        var id = document.getElementById("edit-genre-submit").getAttribute("data-id");
+        if (confirm("Are you sure you want to delete this movie?")) {
+            api.deleteMovie(id);
+        }
+    });
+
     document.addEventListener("scroll", function () {
         if ($(window).scrollTop() > 30) {
-            document.getElementsByTagName("nav")[0].classList.add("bg-faded");
+            document.getElementsByTagName("nav")[0].classList.add("box-shadow");
         }
         if ($(window).scrollTop() < 30) {
-            document.getElementsByTagName("nav")[0].classList.remove("bg-faded");
+            document.getElementsByTagName("nav")[0].classList.remove("box-shadow");
         }
     });
 })();
@@ -210,7 +218,6 @@ var store = function () {
 
                     api.patchMovie(targetId, ratingsPatch);
                     hasVoted[targetId] = true;
-                    console.log(hasVoted);
                 });
             });
         },
@@ -474,7 +481,7 @@ var print = function () {
                 for (var i = moviesToPrint.length - 1; i >= 0; i--) {
                     var movie = moviesToPrint[i];
 
-                    wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer d-flex justify-content-between\">\n            <div>\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> \n            |\n                " + printRateIt(movie.id) + "\n            </div>\n            </div>          \n            </div>\n\n                ";
+                    wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer d-flex justify-content-between\">\n            <div class=\"nobreak\">\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> \n            |\n                " + printRateIt(movie.id) + "\n            </div>\n            </div>          \n            </div>\n\n                ";
                 }
             }
             //DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE

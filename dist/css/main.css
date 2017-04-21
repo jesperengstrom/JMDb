@@ -30,13 +30,16 @@
   padding-bottom: 0; }
 
 .navbar {
-  padding: 0 1rem; }
+  padding: 0.5rem 1rem; }
 
 nav .navbar {
   min-width: 100% !important; }
 
 .sticky-top {
   min-width: 100%; }
+
+.navbar-toggler {
+  margin: 0.5rem; }
 
 button,
 input,
@@ -172,7 +175,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-size: 14px; }
+  font-size: 14px;
+  background: #F7F7F7; }
 
 body {
   display: -ms-flexbox;
@@ -200,7 +204,7 @@ a {
     outline-color: transparent !important; }
 
 nav {
-  transition: background 0.5s ease; }
+  transition: box-shadow 0.7s ease; }
 
 label {
   padding: 0.25rem; }
@@ -239,6 +243,10 @@ hr {
 
 .credits {
   margin-left: 0px; }
+
+#movie-section {
+  background: white;
+  padding: 0 2rem; }
 
 #movie-wrapper {
   -ms-flex-wrap: wrap;
@@ -286,4 +294,11 @@ hr {
       flex-wrap: wrap; }
 
 .nobreak {
+  overflow: hidden;
   white-space: nowrap; }
+
+.box-shadow {
+  box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.18); }
+
+.bg-blue {
+  background: #F0F5FD; }
