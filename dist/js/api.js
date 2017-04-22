@@ -2,27 +2,34 @@
 
 var api = function () {
     //var server = "https://jmdb.herokuapp.com/movies";
-    var server = "https://jmdb.azurewebsites.net/movies";
-
     //backup
     //server = "https://api.myjson.com/bins/10h80z";
+    var server = "https://jmdb.azurewebsites.net/movies";
+    var latestQuery = "";
 
     return {
+        prepareURL: function prepareURL(string) {
+            var url = server;
+            if (string) url += string;
+            api.getMovies(url);
+        },
+
         /**
          * GETs all movies from the API
          * sometimes gets a querystring for search, otherwise just gets all
          */
-        getMovies: function getMovies(query) {
-            var thisUrl = server;
-            if (query) thisUrl += query;
+        getMovies: function getMovies(url) {
+            // let thisUrl = server;
+            // if (query) thisUrl += query;
+            latestQuery = url;
 
             $.getJSON({
-                url: thisUrl,
+                url: url,
                 beforeSend: function beforeSend() {
                     print.showSpinner();
                 },
                 success: function success(fetchedMovies) {
-                    console.log("fetched from: ", thisUrl, fetchedMovies);
+                    console.log("fetched from: ", url, fetchedMovies);
                     store.storeMovies(fetchedMovies);
                 },
                 complete: function complete() {
@@ -47,7 +54,7 @@ var api = function () {
                 success: function success(response) {
                     console.log("successfully posted:", response);
                     //fetching all movies once again
-                    api.getMovies();
+                    api.prepareURL();
                 },
                 complete: function complete() {
                     print.hideSpinner();
@@ -71,7 +78,7 @@ var api = function () {
                 success: function success(response) {
                     console.log("successfully patched:", response);
                     //fetching all movies once again
-                    api.getMovies();
+                    api.getMovies(latestQuery);
                 },
                 complete: function complete() {
                     print.hideSpinner();
@@ -94,7 +101,7 @@ var api = function () {
                 success: function success() {
                     console.log("successfully deleted:");
                     //fetching all movies once again
-                    api.getMovies();
+                    api.prepareURL();
                 },
                 complete: function complete() {
                     print.hideSpinner();
