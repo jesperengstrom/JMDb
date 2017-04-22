@@ -5,16 +5,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function () {
     //dom ready - load all movies
     window.addEventListener("DOMContentLoaded", function () {
-        return api.getMovies();
+        return api.prepareURL();
     });
 
     //nav "show all movies". Gets all from API once again
     document.getElementById("show-all-movies").addEventListener("click", function () {
-        return api.getMovies();
+        return api.prepareURL();
     });
 
-    //evt quick search
+    //evt quick search both click & enter key.
     document.getElementById("quick-search-btn").addEventListener("click", function () {
+        return search.quickSearch();
+    });
+    document.getElementById("quick-search").addEventListener("submit", function () {
         return search.quickSearch();
     });
 
@@ -165,7 +168,7 @@ var store = function () {
     //This is the array where all the movies are stored.
     var movieDatabase = [];
     //This is the array of our current selection - not needed
-    var currentSelection = [];
+    //var currentSelection = [];
 
     var hasVoted = {};
 
@@ -229,13 +232,15 @@ var store = function () {
             api.patchMovie(id, genresPatch);
         },
 
+        //all things currentSelection can be removed I think...
+
         //stores and gets current selection to prevent all movies from showing up when we add a grade or genre.
-        storeCurrentSelection: function storeCurrentSelection(arr) {
-            this.currentSelection = arr;
-        },
-        getCurrentSelection: function getCurrentSelection() {
-            return this.currentSelection;
-        },
+        // storeCurrentSelection: function(arr) {
+        //     this.currentSelection = arr;
+        // },
+        // getCurrentSelection: function() {
+        //     return this.currentSelection;
+        // },
         haveYouVoted: function haveYouVoted(id) {
             if (hasVoted.hasOwnProperty(id)) return true;
             return false;
@@ -253,7 +258,7 @@ var search = function () {
     function quickSearch() {
         var input = document.getElementById("quick-search-text");
         var string = "?q=" + qSpace(input.value);
-        api.getMovies(string);
+        api.prepareURL(string);
         input.value = "";
     }
 
@@ -288,7 +293,7 @@ var search = function () {
         if (searchStarring.length !== 0) searchObj.starring = searchStarring;
 
         //search object --> query string --> api.
-        api.getMovies(makeQueryString(searchObj));
+        api.prepareURL(makeQueryString(searchObj));
         makeNew.resetSearchForm();
     }
 
@@ -485,7 +490,7 @@ var print = function () {
                 }
             }
             //DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
-            store.storeCurrentSelection(moviesToPrint);
+            //store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
         },
