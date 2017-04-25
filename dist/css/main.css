@@ -53,6 +53,9 @@ select {
 .form-check-inline {
   margin-left: .75rem; }
 
+.text-muted {
+  color: rgba(0, 0, 0, 0.7) !important; }
+
 #logo {
   max-width: 80px;
   font-size: 1.5rem;

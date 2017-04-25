@@ -19,8 +19,6 @@ var api = function () {
          * sometimes gets a querystring for search, otherwise just gets all
          */
         getMovies: function getMovies(url) {
-            // let thisUrl = server;
-            // if (query) thisUrl += query;
             latestQuery = url;
 
             $.getJSON({
@@ -29,7 +27,7 @@ var api = function () {
                     print.showSpinner();
                 },
                 success: function success(fetchedMovies) {
-                    console.log("fetched from: ", url, fetchedMovies);
+                    console.log("fetched from: ", url);
                     store.storeMovies(fetchedMovies);
                 },
                 complete: function complete() {
@@ -99,7 +97,7 @@ var api = function () {
                     print.showSpinner();
                 },
                 success: function success() {
-                    console.log("successfully deleted:");
+                    console.log("successfully deleted movie id ", id);
                     //fetching all movies once again
                     api.prepareURL();
                 },

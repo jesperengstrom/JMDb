@@ -17,15 +17,13 @@ var api = (function() {
          * sometimes gets a querystring for search, otherwise just gets all
          */
         getMovies: function(url) {
-            // let thisUrl = server;
-            // if (query) thisUrl += query;
             latestQuery = url;
 
             $.getJSON({
                 url: url,
                 beforeSend: () => { print.showSpinner(); },
                 success: (fetchedMovies) => {
-                    console.log("fetched from: ", url, fetchedMovies);
+                    console.log("fetched from: ", url);
                     store.storeMovies(fetchedMovies);
                 },
                 complete: () => { print.hideSpinner(); },
@@ -84,7 +82,7 @@ var api = (function() {
                 dataType: "json",
                 beforeSend: () => { print.showSpinner(); },
                 success: () => {
-                    console.log("successfully deleted:");
+                    console.log("successfully deleted movie id ", id);
                     //fetching all movies once again
                     api.prepareURL();
                 },
