@@ -33,8 +33,16 @@
                     <a class="nav-link" data-toggle="modal" data-target="#searchModal" href="#">Advanced Search</a>
                 </li>
             </ul>
-            <!--<a class="nav-item nav-link" id="get-best-rated" href="#">Highest rated movie</a>
-                <a class="nav-item nav-link" id="get-lowest-rated" href="#">Lowest rated movie</a>-->
+            <form class="form-inline">
+                <label for="sort-by" class="text-muted">Sort by:</label>
+                <select class="custom-select ml-2 mr-4" id="sort-by">
+                    <option value="recent">recently added</option>
+                    <option value="highest">highest rating</option>
+                    <option value="lowest">lowest rating</option>
+                    <option value="newest">newest movie</option>
+                    <option value="oldest">oldest movie</option>
+                </select>
+            </form>
             <form class="form-inline my-2 my-lg-0" action="javascript:void(-1)" id="quick-search">
                 <input id="quick-search-text" class="form-control mr-sm-2" type="text" placeholder="Quick search">
                 <div class="nav-item">

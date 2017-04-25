@@ -13,6 +13,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return api.prepareURL();
     });
 
+    //evt sorting select change
+    document.getElementById("sort-by").addEventListener("change", function () {
+        return store.sortChange();
+    });
+
     //evt quick search both click & enter key.
     document.getElementById("quick-search-btn").addEventListener("click", function () {
         return search.quickSearch();
@@ -90,12 +95,6 @@ var makeNew = function () {
         this.averageRating = avRating(this.rating);
     }
 
-    //old prototype method that calcs average rating
-    // Movie.prototype.getAverageRating = function() {
-    //     let rating = parseFloat((this.rating.reduce((prev, cur) => prev + cur) / this.rating.length).toFixed(1));
-    //     return rating;
-    // };
-
     Movie.prototype.makeArray = function (string) {
         return string.split(", ");
     };
@@ -167,10 +166,10 @@ var makeNew = function () {
 var store = function () {
     //This is the array where all the movies are stored.
     var movieDatabase = [];
-    //This is the array of our current selection - not needed
-    //var currentSelection = [];
-
+    //stores the movie id:s user has rated
     var hasVoted = {};
+    //stores the current sort
+    var sortBy = "recent";
 
     return {
         getAllMovies: function getAllMovies() {
@@ -178,20 +177,38 @@ var store = function () {
         },
 
         refreshMovies: function refreshMovies(movies) {
+            console.log("printing: ", movies);
             return print.printMovies(movies);
         },
 
-        //riginal function pushing movies to array REMOVE?
-        // addMovie: function(obj) {
-        //     movieDatabase.push(obj);
-        // },
-
         /**
-         * gets an array from the api, stores and sends to print
+         * gets an array from the api, sorts, stores and sends to print
          */
         storeMovies: function storeMovies(movies) {
-            movieDatabase = movies;
+            movieDatabase = store.sortMovies(movies);
             store.refreshMovies(movieDatabase);
+        },
+
+        /**
+         * sorts movies array based on string in sortBy
+         */
+        sortMovies: function sortMovies(movies) {
+            return movies.sort(function (a, b) {
+                switch (sortBy) {
+                    case "recent":
+                        return a.id - b.id;
+                    case "highest":
+                        return a.averageRating - b.averageRating;
+                    case "lowest":
+                        return b.averageRating - a.averageRating;
+                    case "newest":
+                        return a.year - b.year;
+                    case "oldest":
+                        return b.year - a.year;
+                    default:
+                        break;
+                }
+            });
         },
 
         /**
@@ -232,18 +249,17 @@ var store = function () {
             api.patchMovie(id, genresPatch);
         },
 
-        //all things currentSelection can be removed I think...
-
-        //stores and gets current selection to prevent all movies from showing up when we add a grade or genre.
-        // storeCurrentSelection: function(arr) {
-        //     this.currentSelection = arr;
-        // },
-        // getCurrentSelection: function() {
-        //     return this.currentSelection;
-        // },
         haveYouVoted: function haveYouVoted(id) {
             if (hasVoted.hasOwnProperty(id)) return true;
             return false;
+        },
+
+        sortChange: function sortChange() {
+            var selected = event.target;
+            if (selected.value === sortBy) return;else {
+                sortBy = selected.value;
+                store.storeMovies(movieDatabase);
+            }
         }
     };
 }();
@@ -337,9 +353,7 @@ var search = function () {
 }();
 
 /**
- * Module #4 - print-to-screen. The main (public) function printMovies takes an array and prints each item to screen.
- * It also has some private helper methods. This module also contains other screen-related functions such as search and 
- * add box toggle for example.
+ * Module #4 - print-to-screen. 
  */
 var print = function () {
 
@@ -489,8 +503,6 @@ var print = function () {
                     wrapper.innerHTML += "\n        <div class=\"card moviebox\">\n            <div class=\"card-block card-block-poster\">\n                <img src=\"" + movie.cover + "\" class=\"movie-cover\" alt=\"" + movie.title + "\"/>\n            </div>\n            <div class=\"card-block card-block-content\">\n                <h4 class=\"title\">" + movie.title + " <span class=\"tone-down\">(" + movie.year + ")</span></h4>\n                <p>Director: <span class=\"credits tone-down\">" + movie.director + "</span></p>\n                <p>Starring: <span class=\"credits tone-down\">" + joinArray(movie.starring) + "</span></p>        \n                </div>\n                <div class=\"card-footer card-footer-genres\">\n                    " + printGenres(movie.genre) + "\n            </div>\n                \n            <div class=\"card-footer card-footer-rating\">\n                <div class=\"nobreak\"><p>Rating: <span class=\"" + setGradeColor(movie.averageRating) + "\">" + movie.averageRating + "</span>\n                <span class=\"credits tone-down\"> (" + movie.rating.length + " votes)</span>\n            </p>\n            </div>\n            </div>\n            \n            <div class=\"card-footer d-flex justify-content-between\">\n            <div class=\"nobreak\">\n            <a class=\"inline-link edit-genre-button\" id=\"openGenreBox-" + movie.id + "\" data-toggle=\"modal\" data-target=\"#edit-genre-modal\">&#10148; Edit genre</a> \n            |\n                " + printRateIt(movie.id) + "\n            </div>\n            </div>          \n            </div>\n\n                ";
                 }
             }
-            //DONT KNOW IF THERE'S A NEED FOR CURRENT SELECTION ANYMORE
-            //store.storeCurrentSelection(moviesToPrint);
             renderGenresModal(moviesToPrint);
             store.addRating(moviesToPrint);
         },
