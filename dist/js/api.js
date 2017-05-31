@@ -1,10 +1,15 @@
 "use strict";
 
-var api = function () {
+var api = function() {
+    //HEROKU
     //var server = "https://jmdb.herokuapp.com/movies";
-    //backup
+    //Myjson (no-write)
     //server = "https://api.myjson.com/bins/10h80z";
-    var server = "https://jmdb.azurewebsites.net/movies";
+    //AZURE (Shut down)
+    // var server = "https://jmdb.azurewebsites.net/movies";
+    //CLOUDNODE
+    var server = "https://jmdb.cloudno.de/posts";
+
     var latestQuery = "";
 
     return {
